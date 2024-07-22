@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  fil-admin-api:
+    container_name: fil-admin
+    image: fil-admin:latest
+    privileged: true
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - ./config/:/fil-admin-api/config/
+      - ./static/:/fil-admin-api/static/
+      - ./temp/:/fil-admin-api/temp/
+    networks:
+      - myweb
+networks:
+  myweb:
+    driver: bridge
+

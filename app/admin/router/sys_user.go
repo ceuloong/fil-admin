@@ -4,6 +4,7 @@ import (
 	"fil-admin/app/admin/apis"
 	"fil-admin/common/actions"
 	"fil-admin/common/middleware"
+
 	"github.com/gin-gonic/gin"
 	jwt "github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth"
 )
@@ -31,6 +32,7 @@ func registerSysUserRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddle
 		user.PUT("/pwd/set", api.UpdatePwd)
 		user.PUT("/pwd/reset", api.ResetPwd)
 		user.PUT("/status", api.UpdateStatus)
+		user.GET("/getuser", api.GetUser)
 	}
 	v1auth := v1.Group("").Use(authMiddleware.MiddlewareFunc())
 	{

@@ -4,21 +4,24 @@ import (
 	"errors"
 	"fil-admin/utils"
 	"fmt"
+	"net/http"
+	"strconv"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"github.com/shopspring/decimal"
 	"github.com/tealeg/xlsx"
 	"gorm.io/gorm"
-	"net/http"
-	"strconv"
 
 	"fil-admin/app/filpool/models"
 	"fil-admin/app/filpool/service/dto"
 	"fil-admin/common/actions"
 
 	cDto "fil-admin/common/dto"
-	"github.com/360EntSecGroup-Skylar/excelize"
 	"log"
+
+	"github.com/360EntSecGroup-Skylar/excelize"
 )
 
 type FilNodes struct {
@@ -496,4 +499,20 @@ func exportToExcel(w http.ResponseWriter, r *http.Request) {
 
 	// 将文件内容写入响应体中
 	http.ServeFile(w, r, tempFile)
+}
+
+// SumBlockStats 获取矿池的当天报块统计
+func (e *FilNodes) SumBlockStats(nodes []string, lastDay time.Time, list *[]models.BlockStats) error {
+
+	err := e.Orm.Model(&models.BlockStats{}).
+		Select("height_time, height_time_str, SUM(Blocks_growth) as blocks_growth, SUM(blocks_reward_growth_fil) as blocks_reward_growth_fil").
+		Where("height_time >= ? AND node in (?)", lastDay, nodes).
+		Group("height_time, height_time_str").
+		Find(list).Error
+
+	if err != nil {
+		e.Log.Errorf("SumBlockStats error:%s \r\n", err)
+		return err
+	}
+	return nil
 }

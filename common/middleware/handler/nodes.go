@@ -2,8 +2,9 @@ package handler
 
 import (
 	models2 "fil-admin/app/filpool/models"
-	"github.com/shopspring/decimal"
 	"time"
+
+	"github.com/shopspring/decimal"
 
 	"fil-admin/common/models"
 )
@@ -37,6 +38,7 @@ type FilNodes struct {
 	DeptId                  int             `json:"deptId" gorm:"type:int;comment:部门ID"`
 	Title                   string          `json:"title" gorm:"type:varchar(255);comment:节点标签"`
 	ChartList               *[]NodesChart   `json:"chartList"`
+	MiningEfficiency        decimal.Decimal `json:"miningEfficiency" gorm:"type:decimal(20,8)"`
 }
 
 func (FilNodes) TableName() string {
@@ -70,5 +72,6 @@ func (s *FilNodes) Generate(node models2.FilNodes) FilNodes {
 		Type:                node.Type,
 		EndTime:             node.EndTime,
 		Title:               node.Title,
+		MiningEfficiency:    node.MiningEfficiency,
 	}
 }

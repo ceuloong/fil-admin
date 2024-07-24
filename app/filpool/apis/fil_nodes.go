@@ -3,10 +3,14 @@ package apis
 import (
 	"fil-admin/common/middleware"
 	"fil-admin/common/middleware/handler"
+	"fil-admin/common/redis"
+	"fil-admin/utils"
 	"fmt"
+	"strconv"
+	"time"
+
 	"github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth/user"
 	"github.com/shopspring/decimal"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -454,7 +458,7 @@ func (e FilNodes) NodesTotal(c *gin.Context) {
 		poolIndex.LuckyValue24h = poolIndex.LuckyValue24h.Div(decimal.NewFromInt(luckyCount))
 	}
 
-	e.PageOK(poolIndex, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+	e.OK(poolIndex, "查询成功")
 }
 
 func (e FilNodes) UpdateTitle(c *gin.Context) {
@@ -479,4 +483,149 @@ func (e FilNodes) UpdateTitle(c *gin.Context) {
 		return
 	}
 	e.OK(req.GetId(), "修改成功")
+}
+
+/**
+ * 获取矿池的财务数据
+ */
+func (e FilNodes) GetFinance(c *gin.Context) {
+
+	req := dto.FilNodesGetPageReq{}
+	s := service.FilNodes{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	p := actions.GetPermissionFromContext(c)
+	list := make([]models.FilNodes, 0)
+	var count int64
+
+	if user.GetRoleName(c) != "admin" && user.GetRoleName(c) != "系统管理员" {
+		deptId := middleware.GetDeptId(c)
+		if deptId > 0 {
+			req.DeptId = fmt.Sprintf("/%d/", deptId)
+		}
+	}
+	err = s.GetAll(&req, p, &list, &count)
+	if err != nil {
+		e.Error(500, err, fmt.Sprintf("获取FilNodes失败，\r\n失败信息 %s", err.Error()))
+		return
+	}
+
+	poolIndex := new(models.PoolFinance)
+
+	for _, filNodes := range list {
+		poolIndex.AvailableBalance = poolIndex.AvailableBalance.Add(filNodes.AvailableBalance)
+		poolIndex.Balance = poolIndex.Balance.Add(filNodes.Balance)
+		poolIndex.BlocksMined24h = poolIndex.BlocksMined24h + filNodes.BlocksMined24h
+		poolIndex.TotalRewards24h = poolIndex.TotalRewards24h.Add(filNodes.TotalRewards24h)
+	}
+
+	priceStr, _ := redis.GetRedis("ticker")
+	poolIndex.NewlyPrice = utils.DecimalValue(priceStr)
+
+	e.OK(poolIndex, "查询成功")
+}
+
+/**
+ * 获取矿池的报块数据
+ */
+func (e FilNodes) BlockStats(c *gin.Context) {
+
+	req := dto.FilNodesGetPageReq{}
+	s := service.FilNodes{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	p := actions.GetPermissionFromContext(c)
+	list := make([]models.FilNodes, 0)
+	var count int64
+
+	if user.GetRoleName(c) != "admin" && user.GetRoleName(c) != "系统管理员" {
+		deptId := middleware.GetDeptId(c)
+		if deptId > 0 {
+			req.DeptId = fmt.Sprintf("/%d/", deptId)
+		}
+	}
+	err = s.GetAll(&req, p, &list, &count)
+	if err != nil {
+		e.Error(500, err, fmt.Sprintf("获取FilNodes失败，\r\n失败信息 %s", err.Error()))
+		return
+	}
+
+	var nodes []string
+	for _, li := range list {
+		nodes = append(nodes, li.Node)
+	}
+
+	now := time.Now()
+	lastDay := utils.SetTime(now.AddDate(0, 0, -1), now.Hour())
+
+	blockCharts := make([]models.BlockStats, 0)
+
+	err = s.SumBlockStats(nodes, lastDay, &blockCharts)
+	if err != nil {
+		e.Error(500, err, fmt.Sprintf("获取报块数据失败，\r\n失败信息 %s", err.Error()))
+		return
+	}
+	poolBlockStats := e.ChartAddZero(blockCharts)
+
+	e.OK(poolBlockStats, "查询成功")
+}
+
+func (e FilNodes) ChartAddZero(list []models.BlockStats) []models.PoolBlockStats {
+	// 为了解决前端图表数据不全问题，添加前一天的数据
+	// 1. 获取前一天的数据
+	newList := make([]models.PoolBlockStats, 0)
+	if list == nil {
+		// 全部补0
+		now := time.Now()
+		lastDay := utils.SetTime(now.AddDate(0, 0, -1), now.Hour())
+		for i := 0; i < 24; i++ {
+			newHour := lastDay.Add(time.Hour * time.Duration(i)).Hour()
+			newList = append(newList, models.PoolBlockStats{
+				HeightTime:            lastDay.Add(time.Hour * time.Duration(i)),
+				HeightTimeStr:         strconv.Itoa(newHour) + ":00",
+				BlocksGrowth:          0,
+				BlocksRewardGrowthFil: "0",
+			})
+		}
+	} else if len(list) <= 24 {
+		count := len(list)
+		last := list[len(list)-1]
+		lastTime := last.HeightTime
+		for _, li := range list {
+			newList = append(newList, models.PoolBlockStats{
+				HeightTime:            li.HeightTime,
+				HeightTimeStr:         li.HeightTimeStr,
+				BlocksGrowth:          li.BlocksGrowth,
+				BlocksRewardGrowthFil: li.BlocksRewardGrowthFil,
+			})
+		}
+		for i := 1; i <= (24 - count); i++ {
+			newList = append(newList, models.PoolBlockStats{
+				HeightTime:            lastTime.Add(time.Hour * time.Duration(i)),
+				HeightTimeStr:         strconv.Itoa(lastTime.Add(time.Hour*time.Duration(i)).Hour()) + ":00",
+				BlocksGrowth:          0,
+				BlocksRewardGrowthFil: "0",
+			})
+		}
+	}
+
+	return newList
 }

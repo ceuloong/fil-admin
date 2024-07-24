@@ -2,9 +2,10 @@ package apis
 
 import (
 	"fil-admin/app/admin/models"
+	"net/http"
+
 	"github.com/gin-gonic/gin/binding"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -15,6 +16,7 @@ import (
 	"fil-admin/app/admin/service"
 	"fil-admin/app/admin/service/dto"
 	"fil-admin/common/actions"
+	"fil-admin/common/middleware/handler"
 )
 
 type SysUser struct {
@@ -396,6 +398,52 @@ func (e SysUser) GetProfile(c *gin.Context) {
 		"user":  sysUser,
 		"roles": roles,
 		"posts": posts,
+	}, "查询成功")
+}
+
+// GetUser
+// @Summary 单独获取用户信息接口
+// @Description 获取JSON
+// @Tags 个人中心
+// @Success 200 {object} response.Response "{"code": 200, "data": [...]}"
+// @Router /api/v1/user/getuser [get]
+// @Security Bearer
+func (e SysUser) GetUser(c *gin.Context) {
+	s := service.SysUser{}
+	req := dto.SysUserById{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	req.Id = user.GetUserId(c)
+
+	sysUser := models.SysUser{}
+	roles := make([]models.SysRole, 0)
+	posts := make([]models.SysPost, 0)
+	err = s.GetProfile(&req, &sysUser, &roles, &posts)
+	if err != nil {
+		e.Logger.Errorf("get user profile error, %s", err.Error())
+		e.Error(500, err, "获取用户信息失败")
+		return
+	}
+	showUser := handler.ShowUser{
+		UserId:   sysUser.UserId,
+		Username: sysUser.Username,
+		NickName: sysUser.NickName,
+		Phone:    sysUser.Phone,
+		Avatar:   sysUser.Avatar,
+		Email:    sysUser.Email,
+		Remark:   sysUser.Remark,
+		Sex:      sysUser.Sex,
+	}
+	e.OK(gin.H{
+		"user": showUser,
 	}, "查询成功")
 }
 

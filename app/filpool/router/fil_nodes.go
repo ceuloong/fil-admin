@@ -2,6 +2,7 @@ package router
 
 import (
 	"fil-admin/common/middleware"
+
 	"github.com/gin-gonic/gin"
 	jwt "github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth"
 
@@ -16,7 +17,7 @@ func init() {
 // registerFilNodesRouter
 func registerFilNodesRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddleware) {
 	api := apis.FilNodes{}
-	r := v1.Group("/fil-nodes").Use(authMiddleware.MiddlewareFunc()) //.Use(middleware.AuthCheckRole())
+	r := v1.Group("/fil-nodes").Use(authMiddleware.MiddlewareFunc()).Use(middleware.AuthCheckRole())
 	{
 		r.GET("", actions.PermissionAction(), api.GetPage)
 		r.GET("/:id", actions.PermissionAction(), api.Get)
@@ -34,5 +35,7 @@ func registerFilNodesRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddl
 		r1.GET("/total", actions.PermissionAction(), api.NodesTotal)
 		r1.PUT("/:id", actions.PermissionAction(), api.UpdateTitle)
 		r1.GET("/:id", actions.PermissionAction(), api.Get)
+		r1.GET("/finance", actions.PermissionAction(), api.GetFinance)
+		r1.GET("/blockstats", actions.PermissionAction(), api.BlockStats)
 	}
 }

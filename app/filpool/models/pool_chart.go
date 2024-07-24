@@ -1,8 +1,9 @@
 package models
 
 import (
-	"github.com/shopspring/decimal"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 type FilPoolChart struct {
@@ -39,6 +40,14 @@ type PoolIndex struct {
 	DayIncrease         decimal.Decimal `json:"dayIncrease"`
 	WeekTop             string          `json:"weekTop"`
 	DayTop              string          `json:"dayTop"`
+}
+
+type PoolFinance struct {
+	AvailableBalance decimal.Decimal `json:"availableBalance" gorm:"type:decimal(20, 8)"`
+	Balance          decimal.Decimal `json:"balance" gorm:"type:decimal(20, 8)"`
+	BlocksMined24h   int             `gorm:"type:int;24h报块数量" json:"blocksMined24H,omitempty"`
+	TotalRewards24h  decimal.Decimal `gorm:"type:decimal(20, 8);24h出块奖励金额" json:"totalRewards24H"`
+	NewlyPrice       decimal.Decimal `json:"newlyPrice"`
 }
 
 type BarChart struct {

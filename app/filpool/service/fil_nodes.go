@@ -59,6 +59,7 @@ func (e *FilNodes) GetAll(c *dto.FilNodesGetPageReq, p *actions.DataPermission, 
 			cDto.MakeCondition(c.GetNeedSearch()),
 			actions.Permission(data.TableName(), p),
 		).Order("quality_adj_power DESC").
+		Where("status > 0").
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 

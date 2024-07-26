@@ -2,17 +2,23 @@ package apis
 
 import (
 	"fmt"
-	"github.com/shopspring/decimal"
+	"log"
+	"strconv"
 	"time"
+
+	"github.com/shopspring/decimal"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
+	"github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth/user"
 	_ "github.com/go-admin-team/go-admin-core/sdk/pkg/response"
 
 	"fil-admin/app/filpool/models"
 	"fil-admin/app/filpool/service"
 	"fil-admin/app/filpool/service/dto"
 	"fil-admin/common/actions"
+	"fil-admin/common/middleware"
+	"fil-admin/utils"
 )
 
 type FilPoolChart struct {
@@ -114,25 +120,37 @@ func (e FilPoolChart) AppChartList(c *gin.Context) {
 		return
 	}
 
-	p := actions.GetPermissionFromContext(c)
 	list := make([]models.FilPoolChart, 0)
 
-	err = s.GetPage(&req, p, &list)
+	if user.GetRoleName(c) != "admin" && user.GetRoleName(c) != "系统管理员" {
+		deptId := middleware.GetDeptId(c)
+		if deptId > 0 {
+			req.DeptId = deptId
+		}
+	}
+	now := time.Now()
+	//上一天
+	//lastDay := utils.SetTime(now.AddDate(0, 0, -1), now.Hour())
+	//前30天
+	lastDay30 := utils.SetTime(now.AddDate(0, 0, -29), 12)
+
+	err = s.GetAppChart(req.DeptId, lastDay30, &list)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取FilPoolChart失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
 
 	m := make(map[string][]models.AppBarChart)
-	var barData []models.AppBarChart
-	for i := 29; i >= 0; i-- {
-		f, _ := list[i].QualityAdjPower.Float64()
-		barData = append(barData, models.AppBarChart{
-			X: list[i].LastTime.Unix(),
-			Y: f,
-		})
+	// var barData []models.AppBarChart
+	// for i := 29; i >= 0; i-- {
+	// 	f, _ := list[i].QualityAdjPower.Float64()
+	// 	barData = append(barData, models.AppBarChart{
+	// 		X: list[i].LastTime.Unix(),
+	// 		Y: f,
+	// 	})
 
-	}
+	// }
+	barData := e.ChartAddZero(list)
 	m["barData"] = barData
 
 	e.OK(m, "查询成功")
@@ -160,6 +178,13 @@ func (e FilPoolChart) Get(c *gin.Context) {
 		return
 	}
 	var poolChart models.FilPoolChart
+
+	if user.GetRoleName(c) != "admin" && user.GetRoleName(c) != "系统管理员" {
+		deptId := middleware.GetDeptId(c)
+		if deptId > 0 {
+			req.DeptId = deptId
+		}
+	}
 
 	p := actions.GetPermissionFromContext(c)
 	err = s.Get(&req, p, &poolChart)
@@ -227,4 +252,66 @@ func (e FilPoolChart) GetOne(date time.Time, p *actions.DataPermission, c *gin.C
 		e.Error(500, err, fmt.Sprintf("获取FilPoolChart失败，\r\n失败信息 %s", err.Error()))
 	}
 	return object
+}
+
+// ChartAddZero 为了解决前端图表数据不全问题，添加前30天的数据
+func (e FilPoolChart) ChartAddZero(list []models.FilPoolChart) []models.AppBarChart {
+	barData := make([]models.AppBarChart, 0)
+	now := time.Now()
+	lastDay := utils.SetTime(now.AddDate(0, 0, -29), 12)
+	// 先初始化30个点
+	for i := 0; i < 30; i++ {
+		barData = append(barData, models.AppBarChart{
+			X: lastDay.AddDate(0, 0, i).Unix(),
+			Y: 0,
+		})
+	}
+
+	for index, v := range barData {
+		for _, li := range list {
+			t1 := time.Unix(v.X, 0)
+			t2 := li.LastTime
+			if t1.Year() == t2.Year() && t1.Month() == t2.Month() && t1.Day() == t2.Day() {
+				f, _ := li.QualityAdjPower.Float64()
+				barData[index].Y = f
+				break
+			}
+		}
+	}
+
+	return barData
+}
+
+// ChartAddZero 为了解决前端图表数据不全问题，添加前一天的数据
+/**
+ * 数据格式：X:12:00，Y:算力
+ *
+ */
+func (e FilPoolChart) DayChartAddZero(list []models.FilPoolChart) []models.BarChart {
+	// 为了解决前端图表数据不全问题，添加前一天的数据
+	// 1. 获取前一天的数据
+	barData := make([]models.BarChart, 0)
+	now := time.Now()
+	lastDay := utils.SetTime(now.AddDate(0, 0, -1), now.Hour())
+	// 先初始化24个点
+	for i := 0; i < 24; i++ {
+		barData = append(barData, models.BarChart{
+			X: strconv.Itoa(lastDay.Add(time.Hour*time.Duration(i)).Hour()) + ":00",
+			Y: 0,
+		})
+	}
+
+	for c, li := range list {
+		log.Printf("index:%d\n", c)
+		for index, v := range barData {
+			timeStr := strconv.Itoa(li.LastTime.Hour()) + ":00"
+			if v.X == timeStr {
+				f, _ := li.QualityAdjPower.Float64()
+				barData[index].Y = f
+			}
+
+		}
+	}
+
+	return barData
 }

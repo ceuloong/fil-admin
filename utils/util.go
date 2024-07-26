@@ -24,3 +24,7 @@ func SetTime(now time.Time, hour int) time.Time {
 	year, month, day := now.Date()
 	return time.Date(year, month, day, hour, 0, 0, 0, now.Location())
 }
+
+func UnixTimeToTime(timestamp int64) time.Time {
+	return time.Unix(timestamp, 0)
+}

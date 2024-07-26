@@ -51,6 +51,7 @@ type FilNodes struct {
 	LastDistributeTime         time.Time       `json:"lastDistributeTime" gorm:"type:datetime;comment:最后一次分币时间"`
 	EndTime                    time.Time       `json:"endTime" gorm:"type:datetime;comment:节点结束时间"`
 	Tag                        string          `json:"tag" gorm:"-"`
+	TimeTag                    int64           `gorm:"type:bigint" 时间标签`
 	BlocksMined24h             int             `json:"blocksMined24h"`
 	TotalRewards24h            decimal.Decimal `json:"totalRewards24h"`
 	LuckyValue24h              decimal.Decimal `json:"luckyValue24h"`

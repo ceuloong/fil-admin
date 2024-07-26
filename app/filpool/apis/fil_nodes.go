@@ -592,7 +592,7 @@ func (e FilNodes) ChartAddZero(list []models.BlockStats) []models.PoolBlockStats
 	// 为了解决前端图表数据不全问题，添加前一天的数据
 	// 1. 获取前一天的数据
 	newList := make([]models.PoolBlockStats, 0)
-	if list == nil {
+	if len(list) == 0 {
 		// 全部补0
 		now := time.Now()
 		lastDay := utils.SetTime(now.AddDate(0, 0, -1), now.Hour())

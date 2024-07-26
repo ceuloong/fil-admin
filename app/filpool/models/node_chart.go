@@ -1,8 +1,9 @@
 package models
 
 import (
-	"github.com/shopspring/decimal"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 type NodesChart struct {
@@ -17,7 +18,7 @@ type NodesChart struct {
 	LastMonthSectorPledgeBalance decimal.Decimal `gorm:"type:decimal(20, 8)" json:"lastMonthSectorPledgeBalance"`
 	VestingFunds                 decimal.Decimal `gorm:"type:decimal(20, 8)" json:"vestingFunds"`
 	LastVestingFunds             decimal.Decimal `gorm:"type:decimal(20, 8)" json:"lastVestingFunds"`
-	Height                       uint            `gorm:"type:int" json:"height,omitempty"`
+	Height                       int             `gorm:"type:int" json:"height,omitempty"`
 	LastTime                     time.Time       `gorm:"type:datetime" json:"lastTime"`
 	RewardValue                  decimal.Decimal `gorm:"type:decimal(20, 8)" json:"rewardValue"`
 	LastRewardValue              decimal.Decimal `gorm:"type:decimal(20, 8)" json:"lastRewardValue"`
@@ -44,6 +45,7 @@ type NodesChart struct {
 	LastMonthReceiveAmount       decimal.Decimal `gorm:"type:decimal(20, 8);上月末节点接收数量" json:"lastMonthReceiveAmount"`
 	LastMonthBurnAmount          decimal.Decimal `gorm:"type:decimal(20, 4);上月末销毁数量" json:"lastMonthBurnAmount"`
 	LastMonthSendAmount          decimal.Decimal `gorm:"type:decimal(20, 4);上月末提现数量" json:"lastMonthSendAmount"`
+	TimeTag                      int64           `gorm:"type:bigint" 时间标签 json:"timeTag"`
 }
 
 func (table *NodesChart) TableName() string {

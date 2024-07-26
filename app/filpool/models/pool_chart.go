@@ -18,6 +18,7 @@ type FilPoolChart struct {
 	PowerUnit           string          `json:"powerUnit" gorm:"type:varchar(50);comment:算力单位""`
 	PowerPoint          decimal.Decimal `json:"powerPoint" gorm:"type:decimal(10,3);comment:算力占比"`
 	ControlBalance      decimal.Decimal `json:"controlBalance" gorm:"type:decimal(20,8)"`
+	DeptId              int             `json:"deptId" gorm:"type:int;comment:部门ID"`
 }
 
 func (table *FilPoolChart) TableName() string {

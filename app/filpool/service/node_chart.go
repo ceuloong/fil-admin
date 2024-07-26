@@ -2,9 +2,10 @@ package service
 
 import (
 	"errors"
+	"time"
+
 	"github.com/go-admin-team/go-admin-core/sdk/service"
 	"gorm.io/gorm"
-	"time"
 
 	"fil-admin/app/filpool/models"
 	"fil-admin/app/filpool/service/dto"
@@ -67,11 +68,17 @@ func (e *NodesChart) GetList(d *dto.NodeChartGetReq, p *actions.DataPermission, 
 	return nil
 }
 
-func (e *NodesChart) GetChartList(tx *gorm.DB, lastTime time.Time, nodes []string, list *[]models.NodesChart, err error) {
+func (e *NodesChart) GetChartList(tx *gorm.DB, lastTime time.Time, nodes []string, list *[]models.NodesChart) (err error) {
 	err = tx.Table("nodes_chart").Where("last_time < ? and node in (?)", lastTime, nodes).Order("id DESC").Find(&list).Error
 	if err != nil {
 		e.Log.Errorf("get nodes_chart error, %s", err.Error())
 		return
 	}
 	return
+}
+
+func (e *NodesChart) GetLastOneByTime(node models.FilNodes, time time.Time) models.NodesChart {
+	var lastOne models.NodesChart
+	e.Orm.Model(&models.NodesChart{}).Where("TO_DAYS(last_time) = TO_DAYS(?) AND node = ?", time, node.Node).Order("last_time DESC").First(&lastOne)
+	return lastOne
 }

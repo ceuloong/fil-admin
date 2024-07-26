@@ -2,6 +2,7 @@ package models
 
 import (
 	"fil-admin/common/models"
+
 	"gorm.io/gorm"
 )
 
@@ -45,7 +46,7 @@ func (e *SysJob) SetUpdateBy(updateBy int) {
 }
 
 func (e *SysJob) GetList(tx *gorm.DB, list interface{}) (err error) {
-	return tx.Table(e.TableName()).Where("status = ?", 2).Find(list).Error
+	return tx.Table(e.TableName()).Where("status = ? AND entry_id > 0", 2).Find(list).Error
 }
 
 // Update 更新SysJob

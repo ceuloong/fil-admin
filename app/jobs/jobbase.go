@@ -3,10 +3,11 @@ package jobs
 import (
 	models2 "fil-admin/app/jobs/models"
 	"fmt"
+	"time"
+
 	log "github.com/go-admin-team/go-admin-core/logger"
 	"github.com/go-admin-team/go-admin-core/sdk"
 	"gorm.io/gorm"
-	"time"
 
 	"github.com/robfig/cron/v3"
 
@@ -59,7 +60,7 @@ func (e *ExecJob) Run() {
 	//TODO: 待完善部分
 	//str := time.Now().Format(timeFormat) + " [INFO] JobCore " + string(e.EntryId) + "exec success , spend :" + latencyTime.String()
 	//ws.SendAll(str)
-	log.Info("[Job] JobCore %s exec success , spend :%v", e.Name, latencyTime)
+	log.Infof("[Job] JobCore %s exec success , spend :%v", e.Name, latencyTime)
 	return
 }
 

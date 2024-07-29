@@ -2,6 +2,7 @@ package handler
 
 import (
 	models2 "fil-admin/app/filpool/models"
+	"strings"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -37,8 +38,10 @@ type FilNodes struct {
 	EndTime                 time.Time       `json:"endTime" gorm:"type:datetime;comment:节点结束时间"`
 	DeptId                  int             `json:"deptId" gorm:"type:int;comment:部门ID"`
 	Title                   string          `json:"title" gorm:"type:varchar(255);comment:节点标签"`
-	ChartList               *[]NodesChart   `json:"chartList"`
+	ChartList               *[]NodesChart   `json:"chartList" gorm:"-"`
 	MiningEfficiency        decimal.Decimal `json:"miningEfficiency" gorm:"type:decimal(20,8)"`
+	Height                  int             `json:"height" gorm:"type:int;comment:Height"`
+	SyncStatus              bool            `json:"syncStatus" gorm:"type:int;comment:同步状态"`
 }
 
 func (FilNodes) TableName() string {
@@ -73,5 +76,7 @@ func (s *FilNodes) Generate(node models2.FilNodes) FilNodes {
 		EndTime:             node.EndTime,
 		Title:               node.Title,
 		MiningEfficiency:    node.MiningEfficiency,
+		Height:              node.Height,
+		SyncStatus:          strings.Index(node.SyncStatus, "sync ok") > 1,
 	}
 }

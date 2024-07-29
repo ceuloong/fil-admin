@@ -70,6 +70,7 @@ type FilNodes struct {
 	NodeChart                  *NodesChart     `json:"nodeChart" gorm:"foreignKey:node;references:node;"`
 	DeptId                     int             `json:"deptId" gorm:"type:int;comment:部门ID"`
 	Title                      string          `json:"title" gorm:"type:varchar(255);comment:节点标签"`
+	SyncStatus                 string          `json:"syncStatus" gorm:"type:varchar(50);comment:同步状态"`
 	Dept                       *admin.SysDept  `json:"dept"`
 	ChartList                  *[]NodesChart   `json:"chartList" gorm:"-"`
 	models.ModelTime

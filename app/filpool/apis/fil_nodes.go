@@ -444,6 +444,7 @@ func (e FilNodes) NodesTotal(c *gin.Context) {
 		poolIndex.SectorPledgeBalance = poolIndex.SectorPledgeBalance.Add(filNodes.SectorPledgeBalance)
 		poolIndex.VestingFunds = poolIndex.VestingFunds.Add(filNodes.VestingFunds)
 		poolIndex.RewardValue = poolIndex.RewardValue.Add(filNodes.RewardValue)
+		poolIndex.WeightedBlocks = poolIndex.WeightedBlocks + filNodes.WeightedBlocks
 		poolIndex.QualityAdjPower = poolIndex.QualityAdjPower.Add(filNodes.QualityAdjPower)
 		poolIndex.PowerPoint = poolIndex.PowerPoint.Add(filNodes.PowerPoint)
 		poolIndex.QualityAdjPowerDelta24h = poolIndex.QualityAdjPowerDelta24h.Add(filNodes.QualityAdjPowerDelta24h)

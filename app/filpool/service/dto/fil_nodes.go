@@ -4,8 +4,9 @@ import (
 	"fil-admin/app/filpool/models"
 	"fil-admin/common/dto"
 	common "fil-admin/common/models"
-	"github.com/shopspring/decimal"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 type FilNodesGetPageReq struct {
@@ -121,7 +122,7 @@ type FilNodesUpdateReq struct {
 	Status                     string          `json:"status"`
 	Type                       string          `json:"type"`
 	EndTime                    time.Time       `json:"endTime" comment:"节点结束时间"`
-	Title                      string          `json:"title""`
+	Title                      string          `json:"title"`
 	DeptId                     int             `json:"deptId"`
 	common.ControlBy
 	common.ModelTime
@@ -129,7 +130,7 @@ type FilNodesUpdateReq struct {
 
 type FilNodesUpdateTitleReq struct {
 	Id    int    `uri:"id" comment:""` //
-	Title string `json:"title""`
+	Title string `json:"title"`
 	common.ControlBy
 	common.ModelTime
 }

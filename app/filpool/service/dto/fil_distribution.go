@@ -4,8 +4,9 @@ import (
 	"fil-admin/app/filpool/models"
 	"fil-admin/common/dto"
 	common "fil-admin/common/models"
-	"github.com/shopspring/decimal"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 type FilDistributionGetPageReq struct {
@@ -166,16 +167,16 @@ func (s *FilDistributionGetPageReq) GetIds() interface{} {
 }
 
 type FilDistributionExport struct {
-	Node             string           `json:"node" gorm:"type:varchar(128);comment:节点名称" :"node"`
-	FilNode          *models.FilNodes `json:"filNode" gorm:"foreignKey:NodeId;references:Id;" :"filNode"`
-	AvailableBalance decimal.Decimal  `json:"availableBalance" gorm:"type:decimal(20,8);comment:可用余额" :"availableBalance"`
-	HasTransfer      decimal.Decimal  `json:"hasTransfer" gorm:"type:decimal(20,8);comment:本期分币前已转出数量" :"hasTransfer"`
-	DistributePoint  decimal.Decimal  `json:"distributePoint" gorm:"type:decimal(20,3);comment:分成比例" :"distributePoint"`
-	LastSectorPledge decimal.Decimal  `json:"lastSectorPledge" gorm:"type:decimal(20,8);comment:上期质押数量" :"lastSectorPledge"`
-	CurSectorPledge  decimal.Decimal  `json:"curSectorPledge" gorm:"type:decimal(20,8);comment:当前质押数量" :"curSectorPledge"`
-	EffectAmount     decimal.Decimal  `json:"effectAmount" gorm:"type:decimal(20,8);comment:参与分币数量=可用余额+转出数量" :"effectAmount"`
-	DistributeAmount decimal.Decimal  `json:"distributeAmount" gorm:"type:decimal(20,8);comment:应该分币数量=参与数量x分成比例" :"distributeAmount"`
-	AddressTo        string           `json:"addressTo" gorm:"type:varchar(255);comment:接收地址" :"addressTo"`
-	UpdatedAt        time.Time        `json:"updatedAt" comment:"接收地址:" :"updatedAt"`
+	Node             string           `json:"node" gorm:"type:varchar(128);comment:节点名称"`
+	FilNode          *models.FilNodes `json:"filNode" gorm:"foreignKey:NodeId;references:Id;"`
+	AvailableBalance decimal.Decimal  `json:"availableBalance" gorm:"type:decimal(20,8);comment:可用余额"`
+	HasTransfer      decimal.Decimal  `json:"hasTransfer" gorm:"type:decimal(20,8);comment:本期分币前已转出数量"`
+	DistributePoint  decimal.Decimal  `json:"distributePoint" gorm:"type:decimal(20,3);comment:分成比例"`
+	LastSectorPledge decimal.Decimal  `json:"lastSectorPledge" gorm:"type:decimal(20,8);comment:上期质押数量"`
+	CurSectorPledge  decimal.Decimal  `json:"curSectorPledge" gorm:"type:decimal(20,8);comment:当前质押数量"`
+	EffectAmount     decimal.Decimal  `json:"effectAmount" gorm:"type:decimal(20,8);comment:参与分币数量=可用余额+转出数量"`
+	DistributeAmount decimal.Decimal  `json:"distributeAmount" gorm:"type:decimal(20,8);comment:应该分币数量=参与数量x分成比例"`
+	AddressTo        string           `json:"addressTo" gorm:"type:varchar(255);comment:接收地址"`
+	UpdatedAt        time.Time        `json:"updatedAt"`
 	//FilNodeJoin      `search:"type:left;on:id:node_id;table:fil_distribution;join:fil_nodes" :"filNodeJoin"`
 }

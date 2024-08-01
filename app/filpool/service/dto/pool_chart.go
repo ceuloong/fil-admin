@@ -30,7 +30,7 @@ func (m *FilPoolChartGetPageReq) GetNeedSearch() interface{} {
 // FilPoolChartGetReq 功能获取请求参数
 type FilPoolChartGetReq struct {
 	LastTime time.Time `form:"lastTime" search:"type:lte;column:last_time;table:pool_chart" comment:"时间"`
-	DeptId   int       `json:"deptId" search:"type:exact;column:type;table:pool_chart" comment:部门ID"`
+	DeptId   int       `json:"deptId" search:"type:exact;column:type;table:pool_chart" comment:"部门ID"`
 	FilPoolChartOrder
 }
 

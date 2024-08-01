@@ -365,11 +365,6 @@ func (e FilDistribution) DealDistribute(c *gin.Context) {
 		nodeS.UpdateDistribute(&updateNodeReq, p)
 	}
 
-	if err != nil {
-		e.Error(500, err, fmt.Sprintf("更新分币记录失败，\r\n失败信息 %s", err.Error()))
-		return
-	}
-
 	e.OK(req.GetId(), "分币记录更新成功")
 }
 

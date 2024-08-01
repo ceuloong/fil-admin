@@ -45,7 +45,7 @@ type NodesChart struct {
 	LastMonthReceiveAmount       decimal.Decimal `gorm:"type:decimal(20, 8);上月末节点接收数量" json:"lastMonthReceiveAmount"`
 	LastMonthBurnAmount          decimal.Decimal `gorm:"type:decimal(20, 4);上月末销毁数量" json:"lastMonthBurnAmount"`
 	LastMonthSendAmount          decimal.Decimal `gorm:"type:decimal(20, 4);上月末提现数量" json:"lastMonthSendAmount"`
-	TimeTag                      int64           `gorm:"type:bigint" 时间标签 json:"timeTag"`
+	TimeTag                      int64           `gorm:"type:bigint" json:"timeTag"`
 }
 
 func (table *NodesChart) TableName() string {
@@ -60,7 +60,7 @@ type NodeIndex struct {
 	LastTime            time.Time       `json:"lastTime" gorm:"type:datetime"`
 	RewardValue         decimal.Decimal `json:"rewardValue" gorm:"type:decimal(20, 8)"`
 	QualityAdjPower     decimal.Decimal `json:"qualityAdjPower" gorm:"type:decimal(20, 4);comment:有效算力"`
-	PowerUnit           string          `json:"powerUnit" gorm:"type:varchar(50);comment:算力单位""`
+	PowerUnit           string          `json:"powerUnit" gorm:"type:varchar(50);comment:算力单位"`
 	PowerPoint          decimal.Decimal `json:"powerPoint" gorm:"type:decimal(10,3);comment:算力占比"`
 	ControlBalance      decimal.Decimal `json:"controlBalance" gorm:"type:decimal(20,8)"`
 	MonthAvg            decimal.Decimal `json:"monthAvg"`
@@ -97,4 +97,5 @@ type NodesTotal struct {
 	SendAmount              decimal.Decimal `json:"sendAmount"`
 	NodesList               *[]FilNodes     `json:"nodesList"`
 	RoleId                  int             `json:"roleId"`
+	TotalCount              int             `json:"totalCount"`
 }

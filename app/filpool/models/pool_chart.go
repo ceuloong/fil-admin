@@ -15,7 +15,7 @@ type FilPoolChart struct {
 	LastTime            time.Time       `json:"lastTime" gorm:"type:datetime"`
 	RewardValue         decimal.Decimal `json:"rewardValue" gorm:"type:decimal(20, 8)"`
 	QualityAdjPower     decimal.Decimal `json:"qualityAdjPower" gorm:"type:decimal(20, 4);comment:有效算力"`
-	PowerUnit           string          `json:"powerUnit" gorm:"type:varchar(50);comment:算力单位""`
+	PowerUnit           string          `json:"powerUnit" gorm:"type:varchar(50);comment:算力单位"`
 	PowerPoint          decimal.Decimal `json:"powerPoint" gorm:"type:decimal(10,3);comment:算力占比"`
 	ControlBalance      decimal.Decimal `json:"controlBalance" gorm:"type:decimal(20,8)"`
 	DeptId              int             `json:"deptId" gorm:"type:int;comment:部门ID"`
@@ -33,7 +33,7 @@ type PoolIndex struct {
 	LastTime            time.Time       `json:"lastTime" gorm:"type:datetime"`
 	RewardValue         decimal.Decimal `json:"rewardValue" gorm:"type:decimal(20, 8)"`
 	QualityAdjPower     decimal.Decimal `json:"qualityAdjPower" gorm:"type:decimal(20, 4);comment:有效算力"`
-	PowerUnit           string          `json:"powerUnit" gorm:"type:varchar(50);comment:算力单位""`
+	PowerUnit           string          `json:"powerUnit" gorm:"type:varchar(50);comment:算力单位"`
 	PowerPoint          decimal.Decimal `json:"powerPoint" gorm:"type:decimal(10,3);comment:算力占比"`
 	ControlBalance      decimal.Decimal `json:"controlBalance" gorm:"type:decimal(20,8)"`
 	MonthAvg            decimal.Decimal `json:"monthAvg"`

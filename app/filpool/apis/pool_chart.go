@@ -57,10 +57,15 @@ func (e FilPoolChart) ChartList(c *gin.Context) {
 
 	m := make(map[string][]models.BarChart)
 	//var charts [100][2]string
+	// 矿池算力数据
 	var barData []models.BarChart
+	// 控制地址余额数据
 	var barData2 []models.BarChart
+	// 矿池余额数据
 	var balanceData []models.BarChart
+	// 矿池扇区质押数据
 	var sectorPledgeData []models.BarChart
+	// 矿池奖励数据
 	var rewardData []models.BarChart
 	for i := 12; i >= 0; i-- {
 		f, _ := list[i].QualityAdjPower.Float64()

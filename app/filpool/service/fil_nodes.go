@@ -57,9 +57,10 @@ func (e *FilNodes) GetAll(c *dto.FilNodesGetPageReq, p *actions.DataPermission, 
 	err = e.Orm.Model(&data).
 		Scopes(
 			cDto.MakeCondition(c.GetNeedSearch()),
+			cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
 			actions.Permission(data.TableName(), p),
-		).Order("quality_adj_power DESC").
-		Where("status > 0").
+		).
+		Where("quality_adj_power > 0").
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 
@@ -266,12 +267,12 @@ func (e *FilNodes) ExportXlsx(r *dto.FilNodesGetPageReq, c *gin.Context) error {
 	}
 
 	titleList := []string{"Miner", "Owner", "類型", "收益比例", "算力(PiB)", "昨日算力(PiB)", "月初算力(PiB)", "24H算力增量(PiB)", "當月算力增量(PiB)", "可用餘額", "昨日可用", "總餘額", "昨日餘額", "當前質押", "昨日質押", "月初質押", "當月質押釋放", "存儲鎖倉", "昨日鎖倉", "24H爆塊數", "24H獎勵", "24H幸運值", "總爆塊數", "總獎勵", "昨日爆塊數", "昨日爆塊獎勵", "當月爆塊數", "當月爆塊獎勵", "昨日實際收益爆塊數", "昨日實際收益爆塊獎勵", "當月實際收益爆塊數", "當月實際收益爆塊獎勵", "充值總數量", "销毁總數量", "提現總數量", "昨日充值", "昨日銷燬", "昨日提現", "當月充值", "當月銷燬", "當月提現", "控制地址余额", "有效扇區", "錯誤扇區", "扇区大小", "创建时间", "结束时间"}
-	e.saveXlsx(titleList, list, "fil_nodes", c)
+	e.saveXlsx(titleList, list, "fil_nodes")
 
 	return nil
 }
 
-func (e *FilNodes) saveXlsx(titleList []string, dataList []models.FilNodes, fileName string, c *gin.Context) {
+func (e *FilNodes) saveXlsx(titleList []string, dataList []models.FilNodes, fileName string) {
 	// 打开文件
 	// xlsx.NewFile() //
 	// file = "/Users/hello/Documents/Fil_nodes/"

@@ -402,7 +402,7 @@ func (e FilNodes) AppPage(c *gin.Context) {
 		newList = append(newList, f.Generate(filNodes))
 	}
 
-	e.PageOK(newList, int(count), req.GetPageIndex(), 100, "查询成功")
+	e.PageOK(newList, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 func (e FilNodes) NodesTotal(c *gin.Context) {
@@ -450,6 +450,9 @@ func (e FilNodes) NodesTotal(c *gin.Context) {
 		poolIndex.QualityAdjPowerDelta24h = poolIndex.QualityAdjPowerDelta24h.Add(filNodes.QualityAdjPowerDelta24h)
 		poolIndex.BlocksMined24h = poolIndex.BlocksMined24h + filNodes.BlocksMined24h
 		poolIndex.TotalRewards24h = poolIndex.TotalRewards24h.Add(filNodes.TotalRewards24h)
+		poolIndex.ReceiveAmount = poolIndex.ReceiveAmount.Add(filNodes.ReceiveAmount)
+		poolIndex.SendAmount = poolIndex.SendAmount.Add(filNodes.SendAmount)
+		poolIndex.BurnAmount = poolIndex.BurnAmount.Add(filNodes.BurnAmount)
 		if filNodes.QualityAdjPower.GreaterThan(decimal.Zero) {
 			luckyCount++
 		}
@@ -458,6 +461,7 @@ func (e FilNodes) NodesTotal(c *gin.Context) {
 	if luckyCount > 0 {
 		poolIndex.LuckyValue24h = poolIndex.LuckyValue24h.Div(decimal.NewFromInt(luckyCount))
 	}
+	poolIndex.TotalCount = (int)(count)
 
 	e.OK(poolIndex, "查询成功")
 }

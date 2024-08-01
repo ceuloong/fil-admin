@@ -28,6 +28,8 @@ type FilNodes struct {
 	RewardValue                decimal.Decimal `json:"rewardValue" gorm:"type:decimal(20,8);comment:总奖励"`
 	WeightedBlocks             int             `gorm:"type:int"`
 	QualityAdjPower            decimal.Decimal `json:"qualityAdjPower" gorm:"type:decimal(20,4);comment:有效算力"`
+	QualityPower               decimal.Decimal `gorm:"type:decimal(20, 4)" json:"qualityPower"`
+	RawPower                   decimal.Decimal `gorm:"type:decimal(20, 4);comment:原值算力" json:"rawPower"`
 	PowerUnit                  string          `json:"powerUnit" gorm:"type:varchar(50);comment:算力单位"`
 	PowerPoint                 decimal.Decimal `json:"powerPoint" gorm:"type:decimal(10,3);comment:PowerPoint"`
 	PowerGrade                 string          `json:"powerGrade" gorm:"type:varchar(50);comment:PowerGrade"`
@@ -51,7 +53,7 @@ type FilNodes struct {
 	LastDistributeTime         time.Time       `json:"lastDistributeTime" gorm:"type:datetime;comment:最后一次分币时间"`
 	EndTime                    time.Time       `json:"endTime" gorm:"type:datetime;comment:节点结束时间"`
 	Tag                        string          `json:"tag" gorm:"-"`
-	TimeTag                    int64           `gorm:"type:bigint" 时间标签`
+	TimeTag                    int64           `gorm:"type:bigint" comment:"时间标签"`
 	BlocksMined24h             int             `json:"blocksMined24h"`
 	TotalRewards24h            decimal.Decimal `json:"totalRewards24h"`
 	LuckyValue24h              decimal.Decimal `json:"luckyValue24h"`

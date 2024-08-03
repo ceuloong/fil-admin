@@ -5,8 +5,9 @@ import (
 	"fil-admin/cmd/app"
 	"fil-admin/common/global"
 	"fmt"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg"
 	"os"
+
+	"github.com/go-admin-team/go-admin-core/sdk/pkg"
 
 	"github.com/spf13/cobra"
 
@@ -17,10 +18,10 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:          "go-admin",
-	Short:        "go-admin",
+	Use:          "fil-admin",
+	Short:        "fil-admin",
 	SilenceUsage: true,
-	Long:         `go-admin`,
+	Long:         `fil-admin`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
 			tip()
@@ -35,7 +36,7 @@ var rootCmd = &cobra.Command{
 }
 
 func tip() {
-	usageStr := `欢迎使用 ` + pkg.Green(`go-admin `+global.Version) + ` 可以使用 ` + pkg.Red(`-h`) + ` 查看命令`
+	usageStr := `欢迎使用 ` + pkg.Green(`fil-admin `+global.Version) + ` 可以使用 ` + pkg.Red(`-h`) + ` 查看命令`
 	usageStr1 := `也可以参考 https://doc.go-admin.dev/guide/ksks 的相关内容`
 	fmt.Printf("%s\n", usageStr)
 	fmt.Printf("%s\n", usageStr1)

@@ -2,15 +2,18 @@ package redis
 
 import (
 	"context"
+	"log"
 	"time"
 
+	"github.com/go-admin-team/go-admin-core/sdk/config"
 	"github.com/redis/go-redis/v9"
 )
 
 func connect() *redis.Client {
 	// 连接redis
+	log.Println("redis connect success " + config.CacheConfig.Redis.Addr)
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     config.CacheConfig.Redis.Addr,
 		Password: "", // 密码
 		DB:       0,  // 数据库
 		PoolSize: 20, // 连接池大小

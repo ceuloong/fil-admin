@@ -14,7 +14,7 @@ type FilPoolChartGetPageReq struct {
 	Status          string          `form:"status"  search:"type:exact;column:status;table:pool_chart" comment:"节点状态"`
 	QualityAdjPower decimal.Decimal `form:"qualityAdjPower" search:"type:gt;column:status;table:pool_chart" comment:"有效算力"`
 	Type            string          `form:"type"  search:"type:exact;column:type;table:pool_chart" comment:"节点类型"`
-	DeptId          int             `json:"deptId" search:"type:exact;column:type;table:pool_chart" comment:部门ID"`
+	DeptId          int             `json:"deptId" search:"type:exact;column:type;table:pool_chart" comment:"部门ID"`
 	FilPoolChartOrder
 }
 

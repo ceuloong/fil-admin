@@ -46,14 +46,22 @@ func (e FilPoolChart) ChartList(c *gin.Context) {
 		return
 	}
 
-	p := actions.GetPermissionFromContext(c)
-	list := make([]models.FilPoolChart, 0)
+	if user.GetRoleName(c) != "admin" && user.GetRoleName(c) != "系统管理员" {
+		deptId := middleware.GetDeptId(c)
+		if deptId > 0 {
+			req.DeptId = deptId
+		}
+	}
 
-	err = s.GetPage(&req, p, &list)
+	p := actions.GetPermissionFromContext(c)
+	sourceList := make([]models.FilPoolChart, 0)
+	err = s.GetPage(&req, p, &sourceList)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取FilPoolChart失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+
+	list := e.ListAddZero(sourceList)
 
 	m := make(map[string][]models.BarChart)
 	//var charts [100][2]string
@@ -67,7 +75,7 @@ func (e FilPoolChart) ChartList(c *gin.Context) {
 	var sectorPledgeData []models.BarChart
 	// 矿池奖励数据
 	var rewardData []models.BarChart
-	for i := 12; i >= 0; i-- {
+	for i := len(list) - 12; i < len(list); i++ {
 		f, _ := list[i].QualityAdjPower.Float64()
 		cf, _ := list[i].ControlBalance.Float64()
 		barData = append(barData, models.BarChart{
@@ -125,37 +133,32 @@ func (e FilPoolChart) AppChartList(c *gin.Context) {
 		return
 	}
 
-	list := make([]models.FilPoolChart, 0)
-
 	if user.GetRoleName(c) != "admin" && user.GetRoleName(c) != "系统管理员" {
 		deptId := middleware.GetDeptId(c)
 		if deptId > 0 {
 			req.DeptId = deptId
 		}
 	}
-	now := time.Now()
-	//上一天
-	//lastDay := utils.SetTime(now.AddDate(0, 0, -1), now.Hour())
-	//前30天
-	lastDay30 := utils.SetTime(now.AddDate(0, 0, -29), 12)
-
-	err = s.GetAppChart(req.DeptId, lastDay30, &list)
+	p := actions.GetPermissionFromContext(c)
+	sourceList := make([]models.FilPoolChart, 0)
+	err = s.GetPage(&req, p, &sourceList)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取FilPoolChart失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
 
-	m := make(map[string][]models.AppBarChart)
-	// var barData []models.AppBarChart
-	// for i := 29; i >= 0; i-- {
-	// 	f, _ := list[i].QualityAdjPower.Float64()
-	// 	barData = append(barData, models.AppBarChart{
-	// 		X: list[i].LastTime.Unix(),
-	// 		Y: f,
-	// 	})
+	list := e.ListAddZero(sourceList)
 
-	// }
-	barData := e.ChartAddZero(list)
+	m := make(map[string][]models.AppBarChart)
+	var barData []models.AppBarChart
+	for i := 0; i < len(list); i++ {
+		f, _ := list[i].QualityAdjPower.Float64()
+		barData = append(barData, models.AppBarChart{
+			X: list[i].LastTime.Unix(),
+			Y: f,
+		})
+
+	}
 	m["barData"] = barData
 
 	e.OK(m, "查询成功")
@@ -285,6 +288,31 @@ func (e FilPoolChart) ChartAddZero(list []models.FilPoolChart) []models.AppBarCh
 	}
 
 	return barData
+}
+
+// ChartAddZero 为了解决前端图表数据不全问题，添加前30天的数据
+func (e FilPoolChart) ListAddZero(list []models.FilPoolChart) []models.FilPoolChart {
+	newList := make([]models.FilPoolChart, 0)
+	now := time.Now()
+	lastDay := utils.SetTime(now.AddDate(0, 0, -29), 0)
+	// 先初始化30个点
+	for i := 0; i < 30; i++ {
+		newList = append(newList, models.FilPoolChart{
+			LastTime: lastDay.AddDate(0, 0, i),
+		})
+	}
+
+	for i := 0; i < len(newList); i++ {
+		for _, li := range list {
+			t1 := time.Unix(newList[i].LastTime.Unix(), 0)
+			t2 := li.LastTime
+			if t1.Year() == t2.Year() && t1.Month() == t2.Month() && t1.Day() == t2.Day() {
+				newList[i] = li
+				break
+			}
+		}
+	}
+	return newList
 }
 
 // ChartAddZero 为了解决前端图表数据不全问题，添加前一天的数据

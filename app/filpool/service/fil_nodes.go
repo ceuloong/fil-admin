@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fil-admin/utils"
 	"fmt"
-	"net/http"
 	"strconv"
 	"time"
 
@@ -20,8 +19,6 @@ import (
 
 	cDto "fil-admin/common/dto"
 	"log"
-
-	"github.com/360EntSecGroup-Skylar/excelize"
 )
 
 type FilNodes struct {
@@ -476,32 +473,32 @@ func (e *FilNodes) saveXlsx(titleList []string, dataList []models.FilNodes, file
 
 }
 
-func exportToExcel(w http.ResponseWriter, r *http.Request) {
-	// 创建一个新的Excel文件
-	f := excelize.NewFile()
+// func exportToExcel(w http.ResponseWriter, r *http.Request) {
+// 	// 创建一个新的Excel文件
+// 	f := excelize.NewFile()
 
-	// 添加数据到表格中
-	f.SetCellValue("Sheet1", "A1", "ID")
-	f.SetCellValue("Sheet1", "B1", "Name")
-	f.SetCellValue("Sheet1", "A2", "1")
-	f.SetCellValue("Sheet1", "B2", "John Doe")
-	f.SetCellValue("Sheet1", "A3", "2")
-	f.SetCellValue("Sheet1", "B3", "Jane Smith")
+// 	// 添加数据到表格中
+// 	f.SetCellValue("Sheet1", "A1", "ID")
+// 	f.SetCellValue("Sheet1", "B1", "Name")
+// 	f.SetCellValue("Sheet1", "A2", "1")
+// 	f.SetCellValue("Sheet1", "B2", "John Doe")
+// 	f.SetCellValue("Sheet1", "A3", "2")
+// 	f.SetCellValue("Sheet1", "B3", "Jane Smith")
 
-	// 将文件保存为临时文件
-	tempFile := "temp.xlsx"
-	if err := f.SaveAs(tempFile); err != nil {
-		log.Fatal(err)
-	}
+// 	// 将文件保存为临时文件
+// 	tempFile := "temp.xlsx"
+// 	if err := f.SaveAs(tempFile); err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	// 设置响应头告诉浏览器文件的类型
-	w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-	// 设置响应头告诉浏览器文件的名称
-	w.Header().Set("Content-Disposition", "attachment; filename=table.xlsx")
+// 	// 设置响应头告诉浏览器文件的类型
+// 	w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+// 	// 设置响应头告诉浏览器文件的名称
+// 	w.Header().Set("Content-Disposition", "attachment; filename=table.xlsx")
 
-	// 将文件内容写入响应体中
-	http.ServeFile(w, r, tempFile)
-}
+// 	// 将文件内容写入响应体中
+// 	http.ServeFile(w, r, tempFile)
+// }
 
 // SumBlockStats 获取矿池的当天报块统计
 func (e *FilNodes) SumBlockStats(nodes []string, lastDay time.Time, list *[]models.BlockStats) error {

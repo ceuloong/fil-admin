@@ -1,6 +1,7 @@
 package jobs
 
 import (
+	sysModels "fil-admin/app/admin/models"
 	"fil-admin/app/filpool/models"
 	"fil-admin/utils"
 	"fmt"
@@ -69,6 +70,7 @@ func (t ChartsExec) HandlerCharts() {
 	deptPoolChart := make(map[int]*models.FilPoolChart)
 	hasPowerCount := 0
 	noPowerCount := 0
+	deptMap := t.getDeptMap() // 获取所有部门，保存各部门总算力
 
 	for _, n := range nodes {
 		if err := t.SaveNodesChart(n); err != nil {
@@ -86,6 +88,9 @@ func (t ChartsExec) HandlerCharts() {
 		}
 		if _, ok := deptPoolChart[n.DeptId]; ok {
 			updatePoolChart(deptPoolChart[n.DeptId], n) // 更新部门矿池图表数据
+		}
+		if pId, ok := deptMap[n.DeptId]; ok && pId > 0 {
+			updatePoolChart(deptPoolChart[pId], n) // 更新父部门矿池图表数据
 		}
 
 		if n.QualityAdjPower.IsZero() {
@@ -208,4 +213,20 @@ func (e *ChartsExec) GetNodesChart(nodes models.FilNodes) models.NodesChart {
 	}
 
 	return nodesChart
+}
+
+// getDeptMap 获取部门map key:子部门id value:父部门id
+func (e *ChartsExec) getDeptMap() map[int]int {
+	deptMap := make(map[int]int)
+	list := []sysModels.SysDept{}
+	err := e.Orm.Model(&sysModels.SysDept{}).Where("parent_id > 0").Find(&list).Error
+	if err != nil {
+		log.Printf("getDeptMap error:%s \r\n", err)
+		return nil
+	}
+	for _, v := range list {
+		deptMap[v.DeptId] = v.ParentId
+	}
+
+	return deptMap
 }

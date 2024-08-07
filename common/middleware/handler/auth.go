@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"fil-admin/common/global"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk"
 	"github.com/go-admin-team/go-admin-core/sdk/api"
@@ -22,6 +23,7 @@ func PayloadFunc(data interface{}) jwt.MapClaims {
 	if v, ok := data.(map[string]interface{}); ok {
 		u, _ := v["user"].(SysUser)
 		r, _ := v["role"].(SysRole)
+		d, _ := v["dept"].(SysDept)
 		return jwt.MapClaims{
 			jwt.IdentityKey:  u.UserId,
 			jwt.RoleIdKey:    r.RoleId,
@@ -29,6 +31,8 @@ func PayloadFunc(data interface{}) jwt.MapClaims {
 			jwt.NiceKey:      u.Username,
 			jwt.DataScopeKey: r.DataScope,
 			jwt.RoleNameKey:  r.RoleName,
+			jwt.DeptId:       d.DeptId,
+			jwt.DeptName:     d.DeptName,
 		}
 	}
 	return jwt.MapClaims{}
@@ -43,6 +47,8 @@ func IdentityHandler(c *gin.Context) interface{} {
 		"UserId":      claims["identity"],
 		"RoleIds":     claims["roleid"],
 		"DataScope":   claims["datascope"],
+		"DeptId":      claims["deptid"],
+		"DeptName":    claims["deptname"],
 	}
 }
 
@@ -93,11 +99,11 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 			return nil, jwt.ErrInvalidVerificationode
 		}
 	}
-	sysUser, role, e := loginVals.GetUser(db)
+	sysUser, role, dept, e := loginVals.GetUser(db)
 	if e == nil {
 		username = loginVals.Username
 
-		return map[string]interface{}{"user": sysUser, "role": role}, nil
+		return map[string]interface{}{"user": sysUser, "role": role, "dept": dept}, nil
 	} else {
 		msg = "登录失败"
 		status = "1"
@@ -164,11 +170,13 @@ func Authorizator(data interface{}, c *gin.Context) bool {
 	if v, ok := data.(map[string]interface{}); ok {
 		u, _ := v["user"].(models.SysUser)
 		r, _ := v["role"].(models.SysRole)
+		d, _ := v["dept"].(models.SysDept)
 		c.Set("role", r.RoleName)
 		c.Set("roleIds", r.RoleId)
 		c.Set("userId", u.UserId)
 		c.Set("userName", u.Username)
 		c.Set("dataScope", r.DataScope)
+		c.Set("deptId", d.DeptId)
 		return true
 	}
 	return false

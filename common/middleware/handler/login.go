@@ -13,7 +13,7 @@ type Login struct {
 	UUID     string `form:"UUID" json:"uuid" binding:"required"`
 }
 
-func (u *Login) GetUser(tx *gorm.DB) (user SysUser, role SysRole, err error) {
+func (u *Login) GetUser(tx *gorm.DB) (user SysUser, role SysRole, dept SysDept, err error) {
 	err = tx.Table("sys_user").Where("username = ?  and status = '2'", u.Username).First(&user).Error
 	if err != nil {
 		log.Errorf("get user error, %s", err.Error())
@@ -27,6 +27,11 @@ func (u *Login) GetUser(tx *gorm.DB) (user SysUser, role SysRole, err error) {
 	err = tx.Table("sys_role").Where("role_id = ? ", user.RoleId).First(&role).Error
 	if err != nil {
 		log.Errorf("get role error, %s", err.Error())
+		return
+	}
+	err = tx.Table("sys_dept").Where("dept_id = ? ", user.DeptId).First(&dept).Error
+	if err != nil {
+		log.Errorf("get dept error, %s", err.Error())
 		return
 	}
 	return

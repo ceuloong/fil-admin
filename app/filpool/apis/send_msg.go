@@ -12,6 +12,7 @@ import (
 	"fil-admin/app/filpool/service"
 	"fil-admin/app/filpool/service/dto"
 	"fil-admin/common/actions"
+	"fil-admin/common/middleware"
 )
 
 type SendMsg struct {
@@ -41,6 +42,16 @@ func (e SendMsg) GetPage(c *gin.Context) {
 		return
 	}
 
+	if user.GetRoleName(c) != "admin" && user.GetRoleName(c) != "系统管理员" {
+		deptId := middleware.GetDeptId(c)
+		if deptId > 0 {
+			// 查询当前部门下的节点构建in查询条件
+			nApi := FilNodes{}
+			nodes := nApi.NodeIds(c, deptId)
+			req.Node = nodes
+		}
+	}
+
 	p := actions.GetPermissionFromContext(c)
 	list := make([]models.SendMsg, 0)
 	var count int64
@@ -50,8 +61,13 @@ func (e SendMsg) GetPage(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("获取SendMsg失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
+	newList := make([]models.SendMsg, 0)
+	for _, v := range list {
+		v.TypeStr = v.GetTypeStr().(string)
+		newList = append(newList, v)
+	}
 
-	e.PageOK(list, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+	e.PageOK(newList, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 // Get 获取SendMsg

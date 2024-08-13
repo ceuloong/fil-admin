@@ -170,8 +170,8 @@ func (e *FilNodes) UpdateTitle(c *dto.FilNodesUpdateTitleReq, p *actions.DataPer
 		e.Log.Errorf("FilNodesService Update error:%s \r\n", err)
 		return err
 	}
-
-	err = e.Orm.Table(data.TableName()).Updates(c).Error
+	c.Generate(&data)
+	err = e.Orm.Model(&data).Select("title", "update_by", "updated_at").Updates(data).Error
 	if err != nil {
 		e.Log.Errorf("FilNodesService Update error:%s \r\n", err)
 		return err

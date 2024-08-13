@@ -22,6 +22,7 @@ type SendMsg struct {
 	CreateTime time.Time  `gorm:"type:datetime" json:"createTime"`
 	SendTime   *time.Time `gorm:"type:datetime" json:"sendTime"`
 	Type       SendType   `gorm:"type:int" json:"type"`
+	TypeStr    string     `gorm:"-" json:"typeStr"`
 	SendStatus int        `gorm:"type:int" json:"sendStatus"`
 	// models.ModelTime
 	// models.ControlBy
@@ -33,4 +34,19 @@ func (SendMsg) TableName() string {
 
 func (e *SendMsg) GetId() interface{} {
 	return e.Id
+}
+
+func (e *SendMsg) GetTypeStr() interface{} {
+	switch e.Type {
+	case SectorsError:
+		return "扇区错误"
+	case HeightDelay:
+		return "高度延迟"
+	case LuckyLow:
+		return "幸运值过低"
+	case OrphanBlock:
+		return "孤块"
+	default:
+		return ""
+	}
 }

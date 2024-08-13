@@ -134,29 +134,29 @@ func (e FilNodes) ChartList(c *gin.Context) {
 	}
 
 	newList := make([]handler.FilNodes, 0)
-	var nodes []string
+	//var nodes []string
 	for _, filNodes := range list {
-		nodes = append(nodes, filNodes.Node)
+		//nodes = append(nodes, filNodes.Node)
 		f := handler.FilNodes{}
 		newList = append(newList, f.Generate(filNodes))
 	}
 	// TODO 从NodesChart里 in 查询返回map集合，node做为键
-	ListWithChart := make([]handler.FilNodes, 0)
-	if len(nodes) > 0 {
-		ne := NodesChart{}
-		lastTime := time.Now().Add(-time.Hour * 24 * 30)
-		m := ne.GetList(lastTime, nodes, c)
-		for _, node := range newList {
-			if charts := m[node.Node]; charts != nil {
-				node.ChartList = &charts
-			} else {
-				node.ChartList = new([]handler.NodesChart)
-			}
-			ListWithChart = append(ListWithChart, node)
-		}
-	}
+	// ListWithChart := make([]handler.FilNodes, 0)
+	// if len(nodes) > 0 {
+	// 	ne := NodesChart{}
+	// 	lastTime := time.Now().Add(-time.Hour * 24 * 30)
+	// 	m := ne.GetList(lastTime, nodes, c)
+	// 	for _, node := range newList {
+	// 		if charts := m[node.Node]; charts != nil {
+	// 			node.ChartList = &charts
+	// 		} else {
+	// 			node.ChartList = new([]handler.NodesChart)
+	// 		}
+	// 		ListWithChart = append(ListWithChart, node)
+	// 	}
+	// }
 
-	e.PageOK(ListWithChart, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+	e.PageOK(newList, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
 }
 
 func (e FilNodes) RankList(c *gin.Context) {
@@ -633,4 +633,44 @@ func (e FilNodes) ChartAddZero(list []models.BlockStats) []models.PoolBlockStats
 	}
 
 	return newList
+}
+
+/**
+ * 根据部门获取节点id列表
+ */
+func (e FilNodes) NodeIds(c *gin.Context, deptId int) []string {
+
+	req := dto.FilNodesGetPageReq{}
+	s := service.FilNodes{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return nil
+	}
+
+	p := actions.GetPermissionFromContext(c)
+	list := make([]models.FilNodes, 0)
+	var count int64
+
+	if deptId > 0 {
+		req.DeptId = fmt.Sprintf("/%d/", deptId)
+	}
+
+	err = s.GetAll(&req, p, &list, &count)
+	if err != nil {
+		e.Error(500, err, fmt.Sprintf("获取FilNodes失败，\r\n失败信息 %s", err.Error()))
+		return nil
+	}
+
+	var nodes []string
+	for _, li := range list {
+		nodes = append(nodes, li.Node)
+	}
+
+	return nodes
 }

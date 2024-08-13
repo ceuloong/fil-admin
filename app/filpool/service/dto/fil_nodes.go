@@ -128,13 +128,6 @@ type FilNodesUpdateReq struct {
 	common.ModelTime
 }
 
-type FilNodesUpdateTitleReq struct {
-	Id    int    `uri:"id" comment:""` //
-	Title string `json:"title"`
-	common.ControlBy
-	common.ModelTime
-}
-
 func (s *FilNodesUpdateReq) Generate(model *models.FilNodes) {
 	if s.Id == 0 {
 		model.Model = common.Model{Id: s.Id}
@@ -155,6 +148,20 @@ func (s *FilNodesUpdateReq) Generate(model *models.FilNodes) {
 
 func (s *FilNodesUpdateReq) GetId() interface{} {
 	return s.Id
+}
+
+type FilNodesUpdateTitleReq struct {
+	Id    int    `uri:"id" comment:""` //
+	Title string `json:"title"`
+	common.ControlBy
+}
+
+func (s *FilNodesUpdateTitleReq) Generate(model *models.FilNodes) {
+	if s.Id == 0 {
+		model.Model = common.Model{Id: s.Id}
+	}
+	model.Title = s.Title
+	model.UpdateBy = s.UpdateBy
 }
 
 func (s *FilNodesUpdateTitleReq) GetId() interface{} {

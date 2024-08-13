@@ -10,6 +10,10 @@ import (
 
 type SendMsgGetPageReq struct {
 	dto.Pagination `search:"-"`
+	Title          string   `form:"title"  search:"type:contains;column:title;table:send_msg" comment:""`
+	Node           []string `form:"node" search:"type:in;column:node;table:send_msg" comment:"节点"`
+	Content        string   `form:"content"  search:"type:contains;column:content;table:send_msg" comment:""`
+	Type           string   `form:"type"  search:"type:exact;column:type;table:send_msg" comment:"消息类型"`
 	SendMsgOrder
 }
 
@@ -58,8 +62,10 @@ func (s *SendMsgInsertReq) GetId() interface{} {
 }
 
 type SendMsgUpdateReq struct {
-	Id         int `uri:"id" comment:""` //
-	SendStatus int `json:"sendStatus" comment:""`
+	Id         int             `uri:"id" comment:""` //
+	Node       string          `json:"node" comment:""`
+	Type       models.SendType `json:"type" comment:"消息类型"`
+	SendStatus int             `json:"sendStatus" comment:""`
 	common.ControlBy
 }
 
@@ -68,6 +74,8 @@ func (s *SendMsgUpdateReq) Generate(model *models.SendMsg) {
 		model.Model = common.Model{Id: s.Id}
 	}
 	model.SendStatus = s.SendStatus
+	model.Node = s.Node
+	model.Type = s.Type
 }
 
 func (s *SendMsgUpdateReq) GetId() interface{} {

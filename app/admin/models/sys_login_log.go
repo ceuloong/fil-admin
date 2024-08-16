@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	log "github.com/go-admin-team/go-admin-core/logger"
-	"github.com/go-admin-team/go-admin-core/sdk"
-	"github.com/go-admin-team/go-admin-core/storage"
+	log "github.com/ceuloong/fil-admin-core/logger"
+	"github.com/ceuloong/fil-admin-core/sdk"
+	"github.com/ceuloong/fil-admin-core/storage"
 
 	"fil-admin/common/models"
 )

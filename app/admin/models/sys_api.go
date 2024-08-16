@@ -9,9 +9,9 @@ import (
 	"strings"
 
 	"github.com/bitly/go-simplejson"
-	"github.com/go-admin-team/go-admin-core/sdk"
-	"github.com/go-admin-team/go-admin-core/sdk/runtime"
-	"github.com/go-admin-team/go-admin-core/storage"
+	"github.com/ceuloong/fil-admin-core/sdk"
+	"github.com/ceuloong/fil-admin-core/sdk/runtime"
+	"github.com/ceuloong/fil-admin-core/storage"
 
 	"fil-admin/common/models"
 )

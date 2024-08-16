@@ -77,6 +77,6 @@ func (s *FilNodes) Generate(node models2.FilNodes) FilNodes {
 		Title:               node.Title,
 		MiningEfficiency:    node.MiningEfficiency,
 		Height:              node.Height,
-		SyncStatus:          strings.Index(node.SyncStatus, "sync ok") > 1,
+		SyncStatus:          strings.Index(node.SyncStatus, "sync ok") > 0,
 	}
 }

@@ -3,13 +3,13 @@ package database
 import (
 	"time"
 
-	log "github.com/go-admin-team/go-admin-core/logger"
-	"github.com/go-admin-team/go-admin-core/sdk"
-	toolsConfig "github.com/go-admin-team/go-admin-core/sdk/config"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg"
-	mycasbin "github.com/go-admin-team/go-admin-core/sdk/pkg/casbin"
-	toolsDB "github.com/go-admin-team/go-admin-core/tools/database"
-	. "github.com/go-admin-team/go-admin-core/tools/gorm/logger"
+	log "github.com/ceuloong/fil-admin-core/logger"
+	"github.com/ceuloong/fil-admin-core/sdk"
+	toolsConfig "github.com/ceuloong/fil-admin-core/sdk/config"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg"
+	mycasbin "github.com/ceuloong/fil-admin-core/sdk/pkg/casbin"
+	toolsDB "github.com/ceuloong/fil-admin-core/tools/database"
+	. "github.com/ceuloong/fil-admin-core/tools/gorm/logger"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
@@ -28,7 +28,7 @@ func setupSimpleDatabase(host string, c *toolsConfig.Database) {
 	if global.Driver == "" {
 		global.Driver = c.Driver
 	}
-	log.Infof("%s => %s", host, pkg.Green(c.Source))
+	//log.Infof("%s => %s", host, pkg.Green(c.Source))
 	registers := make([]toolsDB.ResolverConfigure, len(c.Registers))
 	for i := range c.Registers {
 		registers[i] = toolsDB.NewResolverConfigure(

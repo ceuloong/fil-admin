@@ -5,7 +5,7 @@ import (
 	"fil-admin/app/filpool/models"
 	"fil-admin/app/filpool/service/dto"
 
-	"github.com/go-admin-team/go-admin-core/sdk/service"
+	"github.com/ceuloong/fil-admin-core/sdk/service"
 	"gorm.io/gorm"
 
 	"fil-admin/common/actions"

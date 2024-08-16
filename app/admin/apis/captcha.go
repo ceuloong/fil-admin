@@ -1,9 +1,9 @@
 package apis
 
 import (
+	"github.com/ceuloong/fil-admin-core/sdk/api"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg/captcha"
 	"github.com/gin-gonic/gin"
-	"github.com/go-admin-team/go-admin-core/sdk/api"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg/captcha"
 )
 
 type System struct {
@@ -22,16 +22,17 @@ func (e System) GenerateCaptchaHandler(c *gin.Context) {
 		e.Error(500, err, "服务初始化失败！")
 		return
 	}
-	id, b64s, err := captcha.DriverDigitFunc()
+	id, b64s, answer, err := captcha.DriverDigitFunc()
 	if err != nil {
 		e.Logger.Errorf("DriverDigitFunc error, %s", err.Error())
 		e.Error(500, err, "验证码获取失败")
 		return
 	}
 	e.Custom(gin.H{
-		"code": 200,
-		"data": b64s,
-		"id":   id,
-		"msg":  "success",
+		"code":   200,
+		"data":   b64s,
+		"id":     id,
+		"answer": answer,
+		"msg":    "success",
 	})
 }

@@ -3,7 +3,7 @@ package service
 import (
 	"time"
 
-	"github.com/go-admin-team/go-admin-core/sdk/service"
+	"github.com/ceuloong/fil-admin-core/sdk/service"
 
 	"fil-admin/app/filpool/models"
 )

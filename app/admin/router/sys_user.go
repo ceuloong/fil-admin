@@ -5,8 +5,8 @@ import (
 	"fil-admin/common/actions"
 	"fil-admin/common/middleware"
 
+	jwt "github.com/ceuloong/fil-admin-core/sdk/pkg/jwtauth"
 	"github.com/gin-gonic/gin"
-	jwt "github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth"
 )
 
 func init() {

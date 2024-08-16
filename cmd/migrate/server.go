@@ -7,10 +7,10 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/go-admin-team/go-admin-core/sdk"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg"
+	"github.com/ceuloong/fil-admin-core/sdk"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg"
 
-	"github.com/go-admin-team/go-admin-core/config/source/file"
+	"github.com/ceuloong/fil-admin-core/config/source/file"
 	"github.com/spf13/cobra"
 
 	"fil-admin/cmd/migrate/migration"
@@ -19,7 +19,7 @@ import (
 	"fil-admin/common/database"
 	"fil-admin/common/models"
 
-	"github.com/go-admin-team/go-admin-core/sdk/config"
+	"github.com/ceuloong/fil-admin-core/sdk/config"
 )
 
 var (

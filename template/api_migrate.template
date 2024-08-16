@@ -5,7 +5,7 @@ import (
 	"runtime"
     "time"
 
-	"github.com/go-admin-team/go-admin-core/sdk/pkg"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg"
 
 	"fil-admin/cmd/migrate/migration"
 	common "fil-admin/common/models"

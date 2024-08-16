@@ -7,7 +7,7 @@ import (
 	"fil-admin/app/admin/service/dto"
 	cDto "fil-admin/common/dto"
 
-	"github.com/go-admin-team/go-admin-core/sdk/service"
+	"github.com/ceuloong/fil-admin-core/sdk/service"
 	"gorm.io/gorm"
 )
 

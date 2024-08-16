@@ -11,12 +11,12 @@ import (
 
 	"github.com/pkg/errors"
 
+	"github.com/ceuloong/fil-admin-core/config/source/file"
+	"github.com/ceuloong/fil-admin-core/sdk"
+	"github.com/ceuloong/fil-admin-core/sdk/api"
+	"github.com/ceuloong/fil-admin-core/sdk/config"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg"
 	"github.com/gin-gonic/gin"
-	"github.com/go-admin-team/go-admin-core/config/source/file"
-	"github.com/go-admin-team/go-admin-core/sdk"
-	"github.com/go-admin-team/go-admin-core/sdk/api"
-	"github.com/go-admin-team/go-admin-core/sdk/config"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg"
 	"github.com/spf13/cobra"
 
 	"fil-admin/app/admin/models"

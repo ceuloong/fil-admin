@@ -8,7 +8,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/go-admin-team/go-admin-core/sdk"
+	"github.com/ceuloong/fil-admin-core/sdk"
 	"gorm.io/gorm"
 )
 

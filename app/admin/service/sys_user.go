@@ -5,9 +5,9 @@ import (
 	"fil-admin/app/admin/models"
 	"fil-admin/app/admin/service/dto"
 
-	log "github.com/go-admin-team/go-admin-core/logger"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg"
-	"github.com/go-admin-team/go-admin-core/sdk/service"
+	log "github.com/ceuloong/fil-admin-core/logger"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg"
+	"github.com/ceuloong/fil-admin-core/sdk/service"
 	"gorm.io/gorm"
 
 	"fil-admin/common/actions"

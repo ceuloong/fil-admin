@@ -4,11 +4,11 @@ import (
 	"fil-admin/app/admin/apis"
 	"mime"
 
-	"github.com/go-admin-team/go-admin-core/sdk/config"
+	"github.com/ceuloong/fil-admin-core/sdk/config"
 
+	jwt "github.com/ceuloong/fil-admin-core/sdk/pkg/jwtauth"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg/ws"
 	"github.com/gin-gonic/gin"
-	jwt "github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg/ws"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	swaggerfiles "github.com/swaggo/files"

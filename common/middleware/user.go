@@ -5,8 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/go-admin-team/go-admin-core/sdk/pkg"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth/user"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg/jwtauth/user"
 )
 
 func GetDeptId(c *gin.Context) int {

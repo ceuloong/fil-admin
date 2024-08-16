@@ -7,15 +7,15 @@ import (
 
 	"fil-admin/common/global"
 
+	"github.com/ceuloong/fil-admin-core/sdk"
+	"github.com/ceuloong/fil-admin-core/sdk/api"
+	"github.com/ceuloong/fil-admin-core/sdk/config"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg/captcha"
+	jwt "github.com/ceuloong/fil-admin-core/sdk/pkg/jwtauth"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg/jwtauth/user"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg/response"
 	"github.com/gin-gonic/gin"
-	"github.com/go-admin-team/go-admin-core/sdk"
-	"github.com/go-admin-team/go-admin-core/sdk/api"
-	"github.com/go-admin-team/go-admin-core/sdk/config"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg/captcha"
-	jwt "github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth/user"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg/response"
 	"github.com/mssola/user_agent"
 )
 

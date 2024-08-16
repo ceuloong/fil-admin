@@ -4,8 +4,9 @@ import (
 	"time"
 
 	"fil-admin/common/middleware/handler"
-	"github.com/go-admin-team/go-admin-core/sdk/config"
-	jwt "github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth"
+
+	"github.com/ceuloong/fil-admin-core/sdk/config"
+	jwt "github.com/ceuloong/fil-admin-core/sdk/pkg/jwtauth"
 )
 
 // AuthInit jwt验证new

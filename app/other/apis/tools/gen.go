@@ -10,10 +10,10 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/ceuloong/fil-admin-core/sdk/api"
+	"github.com/ceuloong/fil-admin-core/sdk/config"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg"
 	"github.com/gin-gonic/gin"
-	"github.com/go-admin-team/go-admin-core/sdk/api"
-	"github.com/go-admin-team/go-admin-core/sdk/config"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg"
 
 	"fil-admin/app/other/models/tools"
 )

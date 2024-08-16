@@ -1,9 +1,9 @@
 package tools
 
 import (
+	"github.com/ceuloong/fil-admin-core/sdk/pkg"
+	_ "github.com/ceuloong/fil-admin-core/sdk/pkg/response"
 	"github.com/gin-gonic/gin"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg"
-	_ "github.com/go-admin-team/go-admin-core/sdk/pkg/response"
 
 	"fil-admin/app/other/models/tools"
 )

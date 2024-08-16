@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/go-admin-team/go-admin-core/sdk/config"
+	"github.com/ceuloong/fil-admin-core/sdk/config"
 	"github.com/redis/go-redis/v9"
 )
 

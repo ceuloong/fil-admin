@@ -2,8 +2,9 @@ package dto
 
 import (
 	"fil-admin/app/jobs/models"
+
+	"github.com/ceuloong/fil-admin-core/sdk/api"
 	"github.com/gin-gonic/gin"
-	"github.com/go-admin-team/go-admin-core/sdk/api"
 
 	"fil-admin/common/dto"
 	common "fil-admin/common/models"

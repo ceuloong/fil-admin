@@ -2,7 +2,8 @@ package dto
 
 import (
 	"fil-admin/common/global"
-	"github.com/go-admin-team/go-admin-core/tools/search"
+
+	"github.com/ceuloong/fil-admin-core/tools/search"
 	"gorm.io/gorm"
 )
 

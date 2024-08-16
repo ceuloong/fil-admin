@@ -10,17 +10,17 @@ require (
 	github.com/bitly/go-simplejson v0.5.1
 	github.com/bytedance/go-tagexpr/v2 v2.9.11
 	github.com/casbin/casbin/v2 v2.77.2
+	github.com/ceuloong/fil-admin-core v1.5.2
+	github.com/ceuloong/fil-admin-core/sdk v1.5.2
 	github.com/gin-gonic/gin v1.9.1
-	github.com/go-admin-team/go-admin-core v1.5.2-0.20231103105356-84418ed9252c
-	github.com/go-admin-team/go-admin-core/sdk v1.5.2-0.20231103105356-84418ed9252c
-	github.com/google/uuid v1.4.0
+	github.com/google/uuid v1.5.0
 	github.com/huaweicloud/huaweicloud-sdk-go-obs v3.23.9+incompatible
 	github.com/mssola/user_agent v0.6.0
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.17.0
 	github.com/qiniu/go-sdk/v7 v7.18.2
-	github.com/redis/go-redis/v9 v9.6.0
+	github.com/redis/go-redis/v9 v9.6.1
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/shirou/gopsutil/v3 v3.23.10
 	github.com/shopspring/decimal v1.3.1
@@ -31,11 +31,11 @@ require (
 	github.com/tealeg/xlsx v1.0.5
 	github.com/unrolled/secure v1.13.0
 	golang.org/x/crypto v0.14.0
-	gorm.io/driver/mysql v1.5.2
-	gorm.io/driver/postgres v1.5.4
+	gorm.io/driver/mysql v1.5.6
+	gorm.io/driver/postgres v1.5.7
 	gorm.io/driver/sqlite v1.5.4
-	gorm.io/driver/sqlserver v1.5.2
-	gorm.io/gorm v1.25.5
+	gorm.io/driver/sqlserver v1.5.3
+	gorm.io/gorm v1.25.8
 )
 
 require (
@@ -55,7 +55,11 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bsm/redislock v0.9.4 // indirect
 	github.com/bytedance/sonic v1.10.2 // indirect
+	github.com/casbin/gorm-adapter/v3 v3.27.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/ceuloong/fil-admin-core/plugins/logger/zap v0.0.0-20240814075556-137c48fab94a // indirect
+	github.com/ceuloong/redis-watcher/v2 v2.0.0-20240814055255-3dd1e3d713cd // indirect
+	github.com/ceuloong/redisqueue/v2 v2.1.0 // indirect
 	github.com/chanxuehong/rand v0.0.0-20211009035549-2f07823e8e99 // indirect
 	github.com/chanxuehong/wechat v0.0.0-20230222024006-36f0325263cd // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
@@ -63,6 +67,7 @@ require (
 	github.com/coreos/go-semver v0.3.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fatih/color v1.15.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
@@ -70,10 +75,8 @@ require (
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/git-chglog/git-chglog v0.15.4 // indirect
-	github.com/go-admin-team/go-admin-core/plugins/logger/zap v1.3.5-rc.0.0.20231103105142-2d9e40ec6f71 // indirect
-	github.com/go-admin-team/gorm-adapter/v3 v3.7.8-0.20220809100335-eaf9f67b3d21 // indirect
-	github.com/go-admin-team/redis-watcher/v2 v2.0.0-20231102130416-bfe327cac940 // indirect
-	github.com/go-admin-team/redisqueue/v2 v2.0.1-0.20231102124201-508101cc789a // indirect
+	github.com/glebarez/go-sqlite v1.20.3 // indirect
+	github.com/glebarez/sqlite v1.7.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
@@ -120,7 +123,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
-	github.com/mojocn/base64Captcha v1.3.5 // indirect
+	github.com/mojocn/base64Captcha v1.3.6 // indirect
 	github.com/nsqio/go-nsq v1.1.0 // indirect
 	github.com/nyaruka/phonenumbers v1.0.55 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
@@ -128,6 +131,7 @@ require (
 	github.com/prometheus/client_model v0.5.0 // indirect
 	github.com/prometheus/common v0.45.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
+	github.com/remyoudompheng/bigfft v0.0.0-20230126093431-47fa9a501578 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shamsher31/goimgext v1.0.0 // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
@@ -161,9 +165,8 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/plugin/dbresolver v1.4.7 // indirect
+	modernc.org/libc v1.22.2 // indirect
+	modernc.org/mathutil v1.5.0 // indirect
+	modernc.org/memory v1.5.0 // indirect
+	modernc.org/sqlite v1.20.3 // indirect
 )
-
-//replace (
-//	github.com/go-admin-team/go-admin-core v1.4.0 => ../../go-admin-core
-//	github.com/go-admin-team/go-admin-core/sdk v1.4.0 => ../../go-admin-core/sdk
-//)

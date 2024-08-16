@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/go-admin-team/go-admin-core/sdk/service"
+	"github.com/ceuloong/fil-admin-core/sdk/service"
 )
 
 // SysRoleMenu 即将弃用结构体

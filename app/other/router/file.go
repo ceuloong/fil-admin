@@ -2,8 +2,9 @@ package router
 
 import (
 	"fil-admin/app/other/apis"
+
+	jwt "github.com/ceuloong/fil-admin-core/sdk/pkg/jwtauth"
 	"github.com/gin-gonic/gin"
-	jwt "github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth"
 )
 
 func init() {

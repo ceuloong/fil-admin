@@ -3,11 +3,11 @@ package apis
 import (
 	"fmt"
 
+	"github.com/ceuloong/fil-admin-core/sdk/api"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg/jwtauth/user"
+	_ "github.com/ceuloong/fil-admin-core/sdk/pkg/response"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"github.com/go-admin-team/go-admin-core/sdk/api"
-	"github.com/go-admin-team/go-admin-core/sdk/pkg/jwtauth/user"
-	_ "github.com/go-admin-team/go-admin-core/sdk/pkg/response"
 
 	"fil-admin/app/admin/models"
 	"fil-admin/app/admin/service"

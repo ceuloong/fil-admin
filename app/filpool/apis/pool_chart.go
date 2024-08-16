@@ -57,16 +57,19 @@ func (e FilPoolChart) ChartList(c *gin.Context) {
 	sourceList := make([]models.FilPoolChart, 0)
 	err = s.GetPage(&req, p, &sourceList)
 	if err != nil {
-		e.Error(500, err, fmt.Sprintf("获取FilPoolChart失败，\r\n失败信息 %s", err.Error()))
+		e.Error(500, err, fmt.Sprintf("获取ChartList失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
 
-	list := e.ListAddZero(sourceList)
+	//list := e.ListAddZero(sourceList)
+	list := sourceList
+
+	barData := e.DayChartAddZero(sourceList)
 
 	m := make(map[string][]models.BarChart)
 	//var charts [100][2]string
 	// 矿池算力数据
-	var barData []models.BarChart
+	//var barData []models.BarChart
 	// 控制地址余额数据
 	var barData2 []models.BarChart
 	// 矿池余额数据
@@ -76,12 +79,12 @@ func (e FilPoolChart) ChartList(c *gin.Context) {
 	// 矿池奖励数据
 	var rewardData []models.BarChart
 	for i := len(list) - 12; i < len(list); i++ {
-		f, _ := list[i].QualityAdjPower.Float64()
+		//f, _ := list[i].QualityAdjPower.Float64()
 		cf, _ := list[i].ControlBalance.Float64()
-		barData = append(barData, models.BarChart{
-			X: list[i].LastTime.Format("1-02 15"),
-			Y: f,
-		})
+		// barData = append(barData, models.BarChart{
+		// 	X: list[i].LastTime.Format("1-02 15"),
+		// 	Y: f,
+		// })
 		barData2 = append(barData2, models.BarChart{
 			X: list[i].LastTime.Format("1-02 15"),
 			Y: cf,
@@ -141,7 +144,7 @@ func (e FilPoolChart) AppChartList(c *gin.Context) {
 	}
 	p := actions.GetPermissionFromContext(c)
 	sourceList := make([]models.FilPoolChart, 0)
-	err = s.GetPage(&req, p, &sourceList)
+	err = s.GetDayAvgPage(&req, p, &sourceList)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取FilPoolChart失败，\r\n失败信息 %s", err.Error()))
 		return
@@ -262,7 +265,7 @@ func (e FilPoolChart) GetOne(deptId int, date time.Time, p *actions.DataPermissi
 
 	err = s.Get(&req, p, &object)
 	if err != nil {
-		log.Printf("获取FilPoolChart失败，\r\n失败信息 %s", err.Error())
+		log.Printf("获取GetOne失败，\r\n失败信息 %s", err.Error())
 	}
 	return object
 }

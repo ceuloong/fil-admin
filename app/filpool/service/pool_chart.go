@@ -29,6 +29,31 @@ func (e *FilPoolChart) GetPage(c *dto.FilPoolChartGetPageReq, p *actions.DataPer
 		Scopes(
 			cDto.MakeCondition(c.GetNeedSearch()),
 			actions.Permission(data.TableName(), p),
+		)
+	if c.DeptId == 0 {
+		tx.Where("dept_id = 0")
+	}
+	tx.Where("last_time >= ?", lastTime)
+
+	err = tx.Find(list).Error
+	if err != nil {
+		e.Log.Errorf("FilNodesService GetPage error:%s \r\n", err)
+		return err
+	}
+	return nil
+}
+
+// GetPage 获取FilNodes列表
+func (e *FilPoolChart) GetDayAvgPage(c *dto.FilPoolChartGetPageReq, p *actions.DataPermission, list *[]models.FilPoolChart) error {
+	var err error
+	var data models.FilPoolChart
+
+	// 一个月前的时间 转换为string
+	lastTime := utils.SetTime(time.Now().AddDate(0, 0, -30), 0).Format(time.DateTime)
+	tx := e.Orm.Model(&data).
+		Scopes(
+			cDto.MakeCondition(c.GetNeedSearch()),
+			actions.Permission(data.TableName(), p),
 		).
 		Select("avg(quality_adj_power) as quality_adj_power, AVG(available_balance) as available_balance, AVG(balance) as balance, AVG(sector_pledge_balance) as sector_pledge_balance, AVG(vesting_funds) as vesting_funds, AVG(control_balance) as control_balance, TO_DAYS(last_time) as lastDays, MIN(last_time) as last_time")
 	if c.DeptId == 0 {
@@ -60,7 +85,7 @@ func (e *FilPoolChart) Get(d *dto.FilPoolChartGetReq, p *actions.DataPermission,
 		First(model).Error
 	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
 		err = errors.New("查看对象不存在或无权查看")
-		e.Log.Errorf("Service GetFilNodes error:%s \r\n", err)
+		e.Log.Errorf("Service FilPoolChart Get error:%s \r\n", err)
 		return err
 	}
 	if err != nil {

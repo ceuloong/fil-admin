@@ -69,12 +69,13 @@ func (e *FilNodes) GetAll(c *dto.FilNodesGetPageReq, p *actions.DataPermission, 
 }
 
 // RankList 获取FilNodes列表
-func (e *FilNodes) RankList(p *actions.DataPermission, list *[]models.FilNodes) error {
+func (e *FilNodes) RankList(c *dto.FilNodesGetPageReq, p *actions.DataPermission, list *[]models.FilNodes) error {
 	var err error
 	var data models.FilNodes
 
 	err = e.Orm.Model(&data).
 		Scopes(
+			cDto.MakeCondition(c.GetNeedSearch()),
 			actions.Permission(data.TableName(), p),
 		).Order("quality_adj_power DESC").
 		Find(list).Error
@@ -86,12 +87,13 @@ func (e *FilNodes) RankList(p *actions.DataPermission, list *[]models.FilNodes) 
 }
 
 // ControlList 获取FilNodes列表
-func (e *FilNodes) ControlList(p *actions.DataPermission, list *[]models.FilNodes) error {
+func (e *FilNodes) ControlList(c *dto.FilNodesGetPageReq, p *actions.DataPermission, list *[]models.FilNodes) error {
 	var err error
 	var data models.FilNodes
 
 	err = e.Orm.Model(&data).
 		Scopes(
+			cDto.MakeCondition(c.GetNeedSearch()),
 			actions.Permission(data.TableName(), p),
 		).Where("quality_adj_power > 0").Order("control_balance").
 		Find(list).Error

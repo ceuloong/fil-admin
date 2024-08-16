@@ -215,7 +215,7 @@ func (e FilPoolChart) Get(c *gin.Context) {
 
 	var object models.FilPoolChart
 	// 前一天
-	object = e.GetOne(poolChart.LastTime.Add(-time.Hour*24), p, c)
+	object = e.GetOne(req.DeptId, poolChart.LastTime.Add(-time.Hour*24), p, c)
 	poolIndex.DayIncrease = poolIndex.QualityAdjPower.Sub(object.QualityAdjPower) //.Div(object.QualityAdjPower).RoundDown(2)
 	if poolIndex.DayIncrease.LessThan(decimal.Zero) {
 		poolIndex.DayTop = "bottom"
@@ -224,7 +224,7 @@ func (e FilPoolChart) Get(c *gin.Context) {
 	}
 
 	// 上一周
-	object = e.GetOne(poolChart.LastTime.Add(-time.Hour*24*7), p, c)
+	object = e.GetOne(req.DeptId, poolChart.LastTime.Add(-time.Hour*24*7), p, c)
 	poolIndex.WeekIncrease = poolIndex.QualityAdjPower.Sub(object.QualityAdjPower) //.Div(object.QualityAdjPower).RoundDown(2)
 	if poolIndex.WeekIncrease.LessThan(decimal.Zero) {
 		poolIndex.WeekTop = "bottom"
@@ -233,15 +233,20 @@ func (e FilPoolChart) Get(c *gin.Context) {
 	}
 
 	// 上个月
-	object = e.GetOne(poolChart.LastTime.Add(-time.Hour*24*30), p, c)
-	poolIndex.MonthAvg = poolIndex.RewardValue.Sub(object.RewardValue).Div(decimal.NewFromInt(30)).RoundDown(2)
+	object = e.GetOne(req.DeptId, poolChart.LastTime.Add(-time.Hour*24*30), p, c)
+	if object.RewardValue.IsZero() {
+		poolIndex.MonthAvg = decimal.Zero
+	} else {
+		poolIndex.MonthAvg = poolIndex.RewardValue.Sub(object.RewardValue).Div(decimal.NewFromInt(30)).RoundDown(2)
+	}
 
 	e.OK(poolIndex, "查询成功")
 }
 
-func (e FilPoolChart) GetOne(date time.Time, p *actions.DataPermission, c *gin.Context) models.FilPoolChart {
+func (e FilPoolChart) GetOne(deptId int, date time.Time, p *actions.DataPermission, c *gin.Context) models.FilPoolChart {
 	req := dto.FilPoolChartGetReq{
 		LastTime: date,
+		DeptId:   deptId,
 	}
 	var object models.FilPoolChart
 	s := service.FilPoolChart{}
@@ -257,7 +262,7 @@ func (e FilPoolChart) GetOne(date time.Time, p *actions.DataPermission, c *gin.C
 
 	err = s.Get(&req, p, &object)
 	if err != nil {
-		e.Error(500, err, fmt.Sprintf("获取FilPoolChart失败，\r\n失败信息 %s", err.Error()))
+		log.Printf("获取FilPoolChart失败，\r\n失败信息 %s", err.Error())
 	}
 	return object
 }

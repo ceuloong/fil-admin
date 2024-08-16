@@ -160,6 +160,7 @@ func (e FilNodes) ChartList(c *gin.Context) {
 }
 
 func (e FilNodes) RankList(c *gin.Context) {
+	req := dto.FilNodesGetPageReq{}
 	s := service.FilNodes{}
 	err := e.MakeContext(c).
 		MakeOrm().
@@ -174,14 +175,25 @@ func (e FilNodes) RankList(c *gin.Context) {
 	p := actions.GetPermissionFromContext(c)
 	list := make([]models.FilNodes, 0)
 
-	err = s.RankList(p, &list)
+	if user.GetRoleName(c) != "admin" && user.GetRoleName(c) != "系统管理员" {
+		deptId := middleware.GetDeptId(c)
+		if deptId > 0 {
+			req.DeptId = fmt.Sprintf("/%d/", deptId)
+		}
+	}
+
+	err = s.RankList(&req, p, &list)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取FilNodes失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
 	m := make(map[string][]models.RankList)
 	var rankList []models.RankList
-	for i := 0; i < 10; i++ {
+	maxLength := 10
+	if len(list) < maxLength {
+		maxLength = len(list)
+	}
+	for i := 0; i < maxLength; i++ {
 		f, _ := list[i].QualityAdjPower.Float64()
 		rankList = append(rankList, models.RankList{
 			Name:  list[i].Node,
@@ -190,13 +202,17 @@ func (e FilNodes) RankList(c *gin.Context) {
 	}
 	m["rankList"] = rankList
 
-	err = s.ControlList(p, &list)
+	err = s.ControlList(&req, p, &list)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取FilNodes失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
 	var controlList []models.RankList
-	for i := 0; i < 10; i++ {
+	maxLength = 10
+	if len(list) < maxLength {
+		maxLength = len(list)
+	}
+	for i := 0; i < maxLength; i++ {
 		cf, _ := list[i].ControlBalance.Float64()
 		controlList = append(controlList, models.RankList{
 			Name:  list[i].Node,

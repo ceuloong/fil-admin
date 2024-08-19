@@ -342,8 +342,8 @@ func (e FilPoolChart) DayChartAddZero(list []models.FilPoolChart) []models.BarCh
 		})
 	}
 
-	for c, li := range list {
-		log.Printf("index:%d\n", c)
+	for _, li := range list {
+		//log.Printf("index:%d\n", c)
 		for index, v := range barData {
 			timeStr := strconv.Itoa(li.LastTime.Hour()) + ":00"
 			if v.X == timeStr {

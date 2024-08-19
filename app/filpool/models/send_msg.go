@@ -12,6 +12,7 @@ const (
 	HeightDelay  SendType = 102 // 高度延迟
 	LuckyLow     SendType = 103 // 幸运值过低
 	OrphanBlock  SendType = 104 // 孤块
+	OffLine      SendType = 105 // 离线
 )
 
 type SendMsg struct {
@@ -46,6 +47,8 @@ func (e *SendMsg) GetTypeStr() interface{} {
 		return "幸运值过低"
 	case OrphanBlock:
 		return "孤块"
+	case OffLine:
+		return "离线"
 	default:
 		return ""
 	}

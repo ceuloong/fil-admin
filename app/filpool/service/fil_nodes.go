@@ -54,10 +54,10 @@ func (e *FilNodes) GetAll(c *dto.FilNodesGetPageReq, p *actions.DataPermission, 
 	err = e.Orm.Model(&data).
 		Scopes(
 			cDto.MakeCondition(c.GetNeedSearch()),
-			cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
+			//cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
 			actions.Permission(data.TableName(), p),
 		).
-		Where("quality_adj_power > 0").
+		Where(data.TableName() + ".status > 0").
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 

@@ -20,6 +20,7 @@ func registerFilPoolRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddle
 	{
 		r.GET("", actions.PermissionAction(), api.ChartList)
 		r.GET("/get", actions.PermissionAction(), api.Get)
+		r.GET("/app-get", actions.PermissionAction(), api.AppGet)
 		r.GET("/app-chart", actions.PermissionAction(), api.AppChartList)
 	}
 }

@@ -130,6 +130,7 @@ func updatePoolChart(poolChart *models.FilPoolChart, node models.FilNodes) {
 	poolChart.PowerPoint = poolChart.PowerPoint.Add(node.PowerPoint)
 	poolChart.ControlBalance = poolChart.ControlBalance.Add(node.ControlBalance)
 	poolChart.RewardValue = poolChart.RewardValue.Add(node.RewardValue)
+	poolChart.NodesCount++
 }
 
 // FindAllNode 获取FilNodes列表 所有符合条件的记录，不分页

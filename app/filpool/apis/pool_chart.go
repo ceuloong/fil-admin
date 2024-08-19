@@ -168,6 +168,42 @@ func (e FilPoolChart) AppChartList(c *gin.Context) {
 	e.OK(m, "查询成功")
 }
 
+func (e FilPoolChart) AppGet(c *gin.Context) {
+	req := dto.FilPoolChartGetReq{}
+	s := service.FilPoolChart{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	var poolChart models.FilPoolChart
+
+	if user.GetRoleName(c) != "admin" && user.GetRoleName(c) != "系统管理员" {
+		deptId := middleware.GetDeptId(c)
+		if deptId > 0 {
+			req.DeptId = deptId
+		}
+	}
+
+	p := actions.GetPermissionFromContext(c)
+	err = s.Get(&req, p, &poolChart)
+	if err != nil {
+		e.Error(500, err, fmt.Sprintf("获取FilPoolChart失败，\r\n失败信息 %s", err.Error()))
+		return
+	}
+	poolIndex := models.AppPoolIndex{
+		QualityAdjPower: poolChart.QualityAdjPower,
+		NodesCount:      poolChart.NodesCount,
+	}
+
+	e.OK(poolIndex, "查询成功")
+}
+
 // Get 获取FilPoolChart
 // @Summary 获取FilPoolChart
 // @Description 获取FilPoolChart

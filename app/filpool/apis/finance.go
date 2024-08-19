@@ -31,6 +31,8 @@ func (e Finance) GetFinance(c *gin.Context) {
 	for _, filNodes := range list {
 		poolIndex.AvailableBalance = poolIndex.AvailableBalance.Add(filNodes.AvailableBalance)
 		poolIndex.Balance = poolIndex.Balance.Add(filNodes.Balance)
+		poolIndex.SectorPledgeBalance = poolIndex.SectorPledgeBalance.Add(filNodes.SectorPledgeBalance)
+		poolIndex.VestingFunds = poolIndex.VestingFunds.Add(filNodes.VestingFunds)
 		poolIndex.BlocksMined24h = poolIndex.BlocksMined24h + filNodes.BlocksMined24h
 		poolIndex.TotalRewards24h = poolIndex.TotalRewards24h.Add(filNodes.TotalRewards24h)
 	}

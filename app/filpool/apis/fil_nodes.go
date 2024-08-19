@@ -450,36 +450,46 @@ func (e FilNodes) NodesTotal(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("获取FilNodes失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
-
-	poolIndex := new(models.NodesTotal)
+	total := models.NodesTotal{}
+	//poolIndex := new(models.NodesTotal)
 
 	var luckyCount int64
+	var efficiency int64
 	for _, filNodes := range list {
-		poolIndex.AvailableBalance = poolIndex.AvailableBalance.Add(filNodes.AvailableBalance)
-		poolIndex.Balance = poolIndex.Balance.Add(filNodes.Balance)
-		poolIndex.SectorPledgeBalance = poolIndex.SectorPledgeBalance.Add(filNodes.SectorPledgeBalance)
-		poolIndex.VestingFunds = poolIndex.VestingFunds.Add(filNodes.VestingFunds)
-		poolIndex.RewardValue = poolIndex.RewardValue.Add(filNodes.RewardValue)
-		poolIndex.WeightedBlocks = poolIndex.WeightedBlocks + filNodes.WeightedBlocks
-		poolIndex.QualityAdjPower = poolIndex.QualityAdjPower.Add(filNodes.QualityAdjPower)
-		poolIndex.PowerPoint = poolIndex.PowerPoint.Add(filNodes.PowerPoint)
-		poolIndex.QualityAdjPowerDelta24h = poolIndex.QualityAdjPowerDelta24h.Add(filNodes.QualityAdjPowerDelta24h)
-		poolIndex.BlocksMined24h = poolIndex.BlocksMined24h + filNodes.BlocksMined24h
-		poolIndex.TotalRewards24h = poolIndex.TotalRewards24h.Add(filNodes.TotalRewards24h)
-		poolIndex.ReceiveAmount = poolIndex.ReceiveAmount.Add(filNodes.ReceiveAmount)
-		poolIndex.SendAmount = poolIndex.SendAmount.Add(filNodes.SendAmount)
-		poolIndex.BurnAmount = poolIndex.BurnAmount.Add(filNodes.BurnAmount)
+		total.AvailableBalance = total.AvailableBalance.Add(filNodes.AvailableBalance)
+		total.Balance = total.Balance.Add(filNodes.Balance)
+		total.SectorPledgeBalance = total.SectorPledgeBalance.Add(filNodes.SectorPledgeBalance)
+		total.VestingFunds = total.VestingFunds.Add(filNodes.VestingFunds)
+		total.RewardValue = total.RewardValue.Add(filNodes.RewardValue)
+		total.WeightedBlocks = total.WeightedBlocks + filNodes.WeightedBlocks
+		total.QualityAdjPower = total.QualityAdjPower.Add(filNodes.QualityAdjPower)
+		total.PowerPoint = total.PowerPoint.Add(filNodes.PowerPoint)
+		total.QualityAdjPowerDelta24h = total.QualityAdjPowerDelta24h.Add(filNodes.QualityAdjPowerDelta24h)
+		total.BlocksMined24h = total.BlocksMined24h + filNodes.BlocksMined24h
+		total.TotalRewards24h = total.TotalRewards24h.Add(filNodes.TotalRewards24h)
+		total.ReceiveAmount = total.ReceiveAmount.Add(filNodes.ReceiveAmount)
+		total.SendAmount = total.SendAmount.Add(filNodes.SendAmount)
+		total.BurnAmount = total.BurnAmount.Add(filNodes.BurnAmount)
 		if filNodes.QualityAdjPower.GreaterThan(decimal.Zero) {
 			luckyCount++
 		}
-		poolIndex.LuckyValue24h = poolIndex.LuckyValue24h.Add(filNodes.LuckyValue24h)
+		total.LuckyValue24h = total.LuckyValue24h.Add(filNodes.LuckyValue24h)
+		if filNodes.MiningEfficiency.GreaterThan(decimal.Zero) {
+			total.MiningEfficiency = total.MiningEfficiency.Add(filNodes.MiningEfficiency)
+			efficiency++
+		}
 	}
 	if luckyCount > 0 {
-		poolIndex.LuckyValue24h = poolIndex.LuckyValue24h.Div(decimal.NewFromInt(luckyCount))
+		total.LuckyValue24h = total.LuckyValue24h.Div(decimal.NewFromInt(luckyCount))
 	}
-	poolIndex.TotalCount = (int)(count)
+	if condition := efficiency > 0; condition {
+		total.MiningEfficiency = total.MiningEfficiency.Div(decimal.NewFromInt(efficiency))
+	}
+	total.TotalCount = (int)(count)
 
-	e.OK(poolIndex, "查询成功")
+	total = total.SetScale(total)
+
+	e.OK(total, "查询成功")
 }
 
 func (e FilNodes) UpdateTitle(c *gin.Context) {

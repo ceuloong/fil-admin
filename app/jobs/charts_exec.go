@@ -90,6 +90,13 @@ func (t ChartsExec) HandlerCharts() {
 			updatePoolChart(deptPoolChart[n.DeptId], n) // 更新部门矿池图表数据
 		}
 		if pId, ok := deptMap[n.DeptId]; ok && pId > 0 {
+			if _, ok := deptPoolChart[pId]; !ok {
+				deptPoolChart[pId] = &models.FilPoolChart{
+					LastTime:  lastTime,
+					PowerUnit: "PiB",
+					DeptId:    pId,
+				}
+			}
 			updatePoolChart(deptPoolChart[pId], n) // 更新父部门矿池图表数据
 		}
 

@@ -92,10 +92,24 @@ type NodesTotal struct {
 	TotalRewards24h         decimal.Decimal `json:"totalRewards24H"`
 	LuckyValue24h           decimal.Decimal `json:"luckyValue24H"`
 	QualityAdjPowerDelta24h decimal.Decimal `json:"qualityAdjPowerDelta24H"`
+	MiningEfficiency        decimal.Decimal `json:"miningEfficiency"`
 	ReceiveAmount           decimal.Decimal `json:"receiveAmount"`
 	BurnAmount              decimal.Decimal `json:"burnAmount"`
 	SendAmount              decimal.Decimal `json:"sendAmount"`
 	NodesList               *[]FilNodes     `json:"nodesList"`
 	RoleId                  int             `json:"roleId"`
 	TotalCount              int             `json:"totalCount"`
+}
+
+func (e *NodesTotal) SetScale(total NodesTotal) NodesTotal {
+	total.AvailableBalance = total.AvailableBalance.RoundDown(2)
+	total.Balance = total.Balance.RoundDown(2)
+	total.SectorPledgeBalance = total.SectorPledgeBalance.RoundDown(2)
+	total.VestingFunds = total.VestingFunds.RoundDown(2)
+	total.RewardValue = total.RewardValue.RoundDown(2)
+	total.TotalRewards24h = total.TotalRewards24h.RoundDown(2)
+	total.LuckyValue24h = total.LuckyValue24h.RoundDown(4)
+	total.MiningEfficiency = total.MiningEfficiency.Mul(decimal.NewFromInt(1000)).RoundDown(1)
+
+	return total
 }

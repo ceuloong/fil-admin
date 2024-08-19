@@ -144,24 +144,25 @@ func (e FilPoolChart) AppChartList(c *gin.Context) {
 	}
 	p := actions.GetPermissionFromContext(c)
 	sourceList := make([]models.FilPoolChart, 0)
-	err = s.GetDayAvgPage(&req, p, &sourceList)
+	err = s.GetPage(&req, p, &sourceList)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取FilPoolChart失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
 
-	list := e.ListAddZero(sourceList)
+	//list := e.ListAddZero(sourceList)
+	barData := e.DayChartAddZero(sourceList)
 
-	m := make(map[string][]models.AppBarChart)
-	var barData []models.AppBarChart
-	for i := 0; i < len(list); i++ {
-		f, _ := list[i].QualityAdjPower.Float64()
-		barData = append(barData, models.AppBarChart{
-			X: list[i].LastTime.Unix(),
-			Y: f,
-		})
+	m := make(map[string][]models.BarChart)
+	// var barData []models.AppBarChart
+	// for i := 0; i < len(list); i++ {
+	// 	f, _ := list[i].QualityAdjPower.Float64()
+	// 	barData = append(barData, models.AppBarChart{
+	// 		X: list[i].LastTime.Unix(),
+	// 		Y: f,
+	// 	})
 
-	}
+	// }
 	m["barData"] = barData
 
 	e.OK(m, "查询成功")
@@ -331,25 +332,44 @@ func (e FilPoolChart) ListAddZero(list []models.FilPoolChart) []models.FilPoolCh
 func (e FilPoolChart) DayChartAddZero(list []models.FilPoolChart) []models.BarChart {
 	// 为了解决前端图表数据不全问题，添加前一天的数据
 	// 1. 获取前一天的数据
+	mapData := make(map[string]time.Time)
 	barData := make([]models.BarChart, 0)
 	now := time.Now()
 	lastDay := utils.SetTime(now.AddDate(0, 0, -1), now.Hour())
 	// 先初始化24个点
 	for i := 0; i < 24; i++ {
+		newHour := lastDay.Add(time.Hour * time.Duration(i)).Hour()
+		newHourStr := strconv.Itoa(newHour)
+		if newHour < 10 {
+			newHourStr = "0" + newHourStr
+		}
 		barData = append(barData, models.BarChart{
-			X: strconv.Itoa(lastDay.Add(time.Hour*time.Duration(i)).Hour()) + ":00",
+			X: newHourStr + ":00",
 			Y: 0,
 		})
+		mapData[newHourStr+":00"] = lastDay.Add(time.Hour * time.Duration(i))
 	}
-
-	for _, li := range list {
+	for index, v := range barData {
 		//log.Printf("index:%d\n", c)
-		for index, v := range barData {
-			timeStr := strconv.Itoa(li.LastTime.Hour()) + ":00"
-			if v.X == timeStr {
+		for _, li := range list {
+			t1 := time.Unix(li.LastTime.Unix(), 0)
+			t2 := mapData[v.X]
+			if t1.Year() == t2.Year() && t1.Month() == t2.Month() && t1.Day() == t2.Day() && t1.Hour() == t2.Hour() {
 				f, _ := li.QualityAdjPower.Float64()
 				barData[index].Y = f
+				break
 			}
+
+			// hour := li.LastTime.Hour()
+			// hourStr := strconv.Itoa(li.LastTime.Hour())
+			// if hour < 10 {
+			// 	hourStr = "0" + hourStr
+			// }
+			// timeStr := hourStr + ":00"
+			// if v.X == timeStr {
+			// 	f, _ := li.QualityAdjPower.Float64()
+			// 	barData[index].Y = f
+			// }
 
 		}
 	}

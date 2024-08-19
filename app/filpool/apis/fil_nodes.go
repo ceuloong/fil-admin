@@ -550,11 +550,13 @@ func (e FilNodes) GetFinance(c *gin.Context) {
 		return
 	}
 
-	poolIndex := new(models.PoolFinance)
+	poolIndex := models.PoolFinance{}
 
 	for _, filNodes := range list {
 		poolIndex.AvailableBalance = poolIndex.AvailableBalance.Add(filNodes.AvailableBalance)
 		poolIndex.Balance = poolIndex.Balance.Add(filNodes.Balance)
+		poolIndex.SectorPledgeBalance = poolIndex.SectorPledgeBalance.Add(filNodes.SectorPledgeBalance)
+		poolIndex.VestingFunds = poolIndex.VestingFunds.Add(filNodes.VestingFunds)
 		poolIndex.BlocksMined24h = poolIndex.BlocksMined24h + filNodes.BlocksMined24h
 		poolIndex.TotalRewards24h = poolIndex.TotalRewards24h.Add(filNodes.TotalRewards24h)
 	}
@@ -562,7 +564,9 @@ func (e FilNodes) GetFinance(c *gin.Context) {
 	priceStr, _ := redis.GetRedis("ticker")
 	poolIndex.NewlyPrice = utils.DecimalValue(priceStr)
 
-	e.OK(poolIndex, "查询成功")
+	finance := poolIndex.SetScale(poolIndex)
+
+	e.OK(finance, "查询成功")
 }
 
 /**

@@ -59,6 +59,16 @@ type PoolFinance struct {
 	NewlyPrice          decimal.Decimal `json:"newlyPrice"`
 }
 
+func (p *PoolFinance) SetScale(pool PoolFinance) PoolFinance {
+	pool.AvailableBalance = pool.AvailableBalance.RoundDown(2)
+	pool.Balance = pool.Balance.RoundDown(2)
+	pool.SectorPledgeBalance = pool.SectorPledgeBalance.RoundDown(2)
+	pool.VestingFunds = pool.VestingFunds.RoundDown(2)
+	pool.TotalRewards24h = pool.TotalRewards24h.RoundDown(2)
+
+	return pool
+}
+
 type BarChart struct {
 	X string  `json:"x"`
 	Y float64 `json:"y"`

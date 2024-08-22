@@ -50,6 +50,7 @@ func (e *FilNodes) GetPage(c *dto.FilNodesGetPageReq, p *actions.DataPermission,
 func (e *FilNodes) GetAll(c *dto.FilNodesGetPageReq, p *actions.DataPermission, list *[]models.FilNodes, count *int64) error {
 	var err error
 	var data models.FilNodes
+	c.Status = "1"
 
 	err = e.Orm.Model(&data).
 		Scopes(
@@ -57,7 +58,7 @@ func (e *FilNodes) GetAll(c *dto.FilNodesGetPageReq, p *actions.DataPermission, 
 			//cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
 			actions.Permission(data.TableName(), p),
 		).
-		Where(data.TableName() + ".status > 0").
+		//Where(data.TableName() + ".status > 0").
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 

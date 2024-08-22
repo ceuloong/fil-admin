@@ -24,9 +24,21 @@ type SendMsg struct {
 	SendTime   *time.Time `gorm:"type:datetime" json:"sendTime"`
 	Type       SendType   `gorm:"type:int" json:"type"`
 	TypeStr    string     `gorm:"-" json:"typeStr"`
+	TimeShow   string     `gorm:"-" json:"timeShow"`
 	SendStatus int        `gorm:"type:int" json:"sendStatus"`
 	// models.ModelTime
 	// models.ControlBy
+}
+
+type ShowSendMsg struct {
+	Id         int      `json:"id"`
+	Title      string   `gorm:"type:varchar(255)" json:"title"`
+	Node       string   `gorm:"type:varchar(30)" json:"node"`
+	Content    string   `gorm:"type:varchar(255)" json:"content"`
+	Type       SendType `gorm:"type:int" json:"type"`
+	TypeStr    string   `gorm:"-" json:"typeStr"`
+	TimeShow   string   `gorm:"-" json:"timeShow"`
+	SendStatus int      `gorm:"type:int" json:"sendStatus"`
 }
 
 func (SendMsg) TableName() string {
@@ -52,4 +64,22 @@ func (e *SendMsg) GetTypeStr() interface{} {
 	default:
 		return ""
 	}
+}
+
+// 当天只显示时间，昨天显示昨天，其他显示日期
+func (e *SendMsg) ShowTimeStr() string {
+	now := time.Now()
+	if e.CreateTime.Year() == now.Year() && e.CreateTime.Month() == now.Month() && e.CreateTime.Day() == now.Day() {
+		return e.CreateTime.Format("15:04:05")
+	}
+	if e.CreateTime.Year() == now.Year() && e.CreateTime.Month() == now.Month() && e.CreateTime.Day() == now.Day()-1 {
+		return "昨天"
+	}
+	if e.CreateTime.Year() == now.Year() && e.CreateTime.Month() == now.Month() && e.CreateTime.Day() == now.Day()-2 {
+		return "前天"
+	}
+	if e.CreateTime.Year() == now.Year() && e.CreateTime.Month() == now.Month() && e.CreateTime.Day() == now.Day()-7 {
+		return "一周前"
+	}
+	return e.CreateTime.Format("2006-01-02 15:04:05")
 }

@@ -61,10 +61,19 @@ func (e SendMsg) GetPage(c *gin.Context) {
 		e.Error(500, err, fmt.Sprintf("获取SendMsg失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
-	newList := make([]models.SendMsg, 0)
+	newList := make([]models.ShowSendMsg, 0)
 	for _, v := range list {
-		v.TypeStr = v.GetTypeStr().(string)
-		newList = append(newList, v)
+		sv := models.ShowSendMsg{
+			Id:         v.Id,
+			Title:      v.Title,
+			Content:    v.Content,
+			Type:       v.Type,
+			SendStatus: v.SendStatus,
+			Node:       v.Node,
+			TypeStr:    v.GetTypeStr().(string),
+			TimeShow:   v.ShowTimeStr(),
+		}
+		newList = append(newList, sv)
 	}
 
 	e.PageOK(newList, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")

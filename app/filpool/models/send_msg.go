@@ -72,14 +72,14 @@ func (e *SendMsg) ShowTimeStr() string {
 	if e.CreateTime.Year() == now.Year() && e.CreateTime.Month() == now.Month() && e.CreateTime.Day() == now.Day() {
 		return e.CreateTime.Format("15:04:05")
 	}
-	if e.CreateTime.Year() == now.Year() && e.CreateTime.Month() == now.Month() && e.CreateTime.Day() == now.Day()-1 {
-		return "昨天"
-	}
-	if e.CreateTime.Year() == now.Year() && e.CreateTime.Month() == now.Month() && e.CreateTime.Day() == now.Day()-2 {
-		return "前天"
-	}
-	if e.CreateTime.Year() == now.Year() && e.CreateTime.Month() == now.Month() && e.CreateTime.Day() == now.Day()-7 {
-		return "一周前"
-	}
+	// if e.CreateTime.Year() == now.Year() && e.CreateTime.Month() == now.Month() && e.CreateTime.Day() == now.Day()-1 {
+	// 	return "昨天"
+	// }
+	// if e.CreateTime.Year() == now.Year() && e.CreateTime.Month() == now.Month() && e.CreateTime.Day() == now.Day()-2 {
+	// 	return "前天"
+	// }
+	// if e.CreateTime.Year() == now.Year() && e.CreateTime.Month() == now.Month() && e.CreateTime.Day() == now.Day()-7 {
+	// 	return "一周前"
+	// }
 	return e.CreateTime.Format("2006-01-02 15:04:05")
 }

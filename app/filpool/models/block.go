@@ -35,7 +35,7 @@ func (Block) TableName() string {
 }
 
 func (e *Block) GetId() interface{} {
-	return e.Height
+	return e.Id
 }
 
 func (e *Block) Generate() BlockShow {

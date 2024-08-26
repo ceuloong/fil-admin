@@ -48,6 +48,9 @@ func (e Block) GetPage(c *gin.Context) {
 	p := actions.GetPermissionFromContext(c)
 	list := make([]models.Block, 0)
 	var count int64
+	if req.Status == "" {
+		req.Status = "2"
+	}
 
 	err = s.GetPage(&req, p, &list, &count)
 	if err != nil {

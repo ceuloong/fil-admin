@@ -66,9 +66,9 @@ type FilNodes struct {
 	TotalRewards30d            decimal.Decimal `json:"totalRewards30d"`
 	LuckyValue30d              decimal.Decimal `json:"luckyValue30d"`
 	QualityAdjPowerDelta30d    decimal.Decimal `json:"qualityAdjPowerDelta30d"`
-	MiningEfficiency           decimal.Decimal `gorm:"type:decimal(20,8)"` // 挖矿效率
-	MiningEfficiency7d         decimal.Decimal `gorm:"type:decimal(20,8)"`
-	MiningEfficiency30d        decimal.Decimal `gorm:"type:decimal(20,8)"`
+	MiningEfficiency           decimal.Decimal `gorm:"type:decimal(20,8)" json:"miningEfficiency"` // 挖矿效率
+	MiningEfficiency7d         decimal.Decimal `gorm:"type:decimal(20,8)" json:"miningEfficiency7d"`
+	MiningEfficiency30d        decimal.Decimal `gorm:"type:decimal(20,8)" json:"miningEfficiency30d"`
 	NodeChart                  *NodesChart     `json:"nodeChart" gorm:"foreignKey:node;references:node;"`
 	DeptId                     int             `json:"deptId" gorm:"type:int;comment:部门ID"`
 	Title                      string          `json:"title" gorm:"type:varchar(255);comment:节点标签"`

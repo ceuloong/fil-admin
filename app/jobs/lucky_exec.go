@@ -169,8 +169,8 @@ func (e *BlockStatsExec) Generate(node models.FilNodes, bs BlockStats) UpdateNod
 		TotalRewards24h: bs.BlocksRewardGrowthFil,
 	}
 	if node.QualityAdjPower.GreaterThan(decimal.Zero) {
-		// 计算24小时平均收益  FIL/PiB
-		updateNodes.MiningEfficiency = updateNodes.TotalRewards24h.Div(node.QualityAdjPower).RoundDown(1)
+		// 计算24小时平均收益  FIL/TiB
+		updateNodes.MiningEfficiency = updateNodes.TotalRewards24h.Div(node.QualityAdjPower.Mul(utils.DecimalValue("1000"))).RoundDown(4)
 		// 计算24小时Luck值
 		if node.AverageWinRate.GreaterThan(decimal.Zero) {
 			updateNodes.LuckyValue24h = decimal.NewFromInt(int64(bs.BlocksGrowth)).Div(node.AverageWinRate).Mul(decimal.NewFromInt(7)).RoundDown(4)

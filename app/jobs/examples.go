@@ -12,6 +12,7 @@ func InitJob() {
 	jobList = map[string]JobExec{
 		"ExamplesOne": ExamplesOne{},
 		"ChartsExec":  ChartsExec{},
+		"BlockStats":  BlockStatsExec{},
 	}
 }
 

@@ -18,6 +18,7 @@ type BlockGetPageReq struct {
 }
 
 type BlockOrder struct {
+	Id          string `form:"idOrder"  search:"type:order;column:id;table:block"`
 	Height      string `form:"heightOrder"  search:"type:order;column:height;table:block"`
 	Node        string `form:"nodeOrder"  search:"type:order;column:node;table:block"`
 	BlockTime   string `form:"blockTimeOrder"  search:"type:order;column:block_time;table:block"`

@@ -26,7 +26,7 @@ func (e *Block) GetPage(c *dto.BlockGetPageReq, p *actions.DataPermission, list 
 			cDto.MakeCondition(c.GetNeedSearch()),
 			cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
 			actions.Permission(data.TableName(), p),
-		).Order("height desc").
+		).Order("id desc").
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error
 	if err != nil {

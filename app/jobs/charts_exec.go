@@ -12,7 +12,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// ExamplesOne
 // 新添加的job 必须按照以下格式定义，并实现Exec函数
 type ChartsExec struct {
 	Orm *gorm.DB
@@ -21,7 +20,7 @@ type ChartsExec struct {
 func (t ChartsExec) Exec(arg interface{}) error {
 	str := time.Now().Format(timeFormat) + " [INFO] JobCore ChartsExec exec success"
 
-	db := t.GetDb()
+	db := GetDb()
 	if db == nil {
 		fmt.Println("db is nil")
 		return nil
@@ -34,7 +33,7 @@ func (t ChartsExec) Exec(arg interface{}) error {
 	return nil
 }
 
-func (t ChartsExec) GetDb() *gorm.DB {
+func GetDb() *gorm.DB {
 
 	dbs := sdk.Runtime.GetDb()
 	for k, db := range dbs {

@@ -74,6 +74,7 @@ type FilNodes struct {
 	Title                      string          `json:"title" gorm:"type:varchar(255);comment:节点标签"`
 	SyncStatus                 string          `json:"syncStatus" gorm:"type:varchar(50);comment:同步状态"`
 	OnLine                     bool            `json:"onLine" gorm:"type:int;comment:是否在线"`
+	AverageWinRate             decimal.Decimal `json:"averageWinRate" gorm:"type:decimal(20, 4);comment:周中签率"`
 	Dept                       *admin.SysDept  `json:"dept"`
 	ChartList                  *[]NodesChart   `json:"chartList" gorm:"-"`
 	models.ModelTime

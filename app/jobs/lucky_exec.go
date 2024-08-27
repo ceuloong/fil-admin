@@ -143,7 +143,7 @@ func (b BlockStatsExec) GetHourStr(hour int) string {
 
 // FindAllNode 获取FilNodes列表 所有符合条件的记录，不分页
 func (e *BlockStatsExec) FindAllNode(list *[]models.FilNodes) error {
-	err := e.Orm.Model(&models.FilNodes{}).Where("status > 0").Find(list).Error
+	err := e.Orm.Model(&models.FilNodes{}).Where("status > 0 AND on_line = 1").Find(list).Error
 
 	if err != nil {
 		log.Printf("FindAllNode error:%s \r\n", err)

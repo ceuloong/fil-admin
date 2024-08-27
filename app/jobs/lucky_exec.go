@@ -42,7 +42,8 @@ func (t BlockStatsExec) Exec(arg interface{}) error {
 		return err
 	}
 	for _, n := range nodes {
-		bs, _ := t.Get24HBlockWinningStatsFromRedis(BlockStatsKey + "_" + n.Node)
+		key := fmt.Sprintf("%s_%s", n.Node, BlockStatsKey)
+		bs, _ := t.Get24HBlockWinningStatsFromRedis(key)
 		node := t.Generate(n, bs)
 		// update node block stats
 		if err = t.UpdateNodes(node); err != nil {

@@ -6,9 +6,11 @@ import (
 	"fil-admin/utils"
 	"fmt"
 	"log"
+	"math"
 	"time"
 
 	"github.com/ceuloong/fil-admin-core/sdk"
+	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 )
 
@@ -145,11 +147,16 @@ func (e *ChartsExec) FindAllNode(list *[]models.FilNodes) error {
 
 // SaveNodesChart 保存节点图表数据
 func (e *ChartsExec) SaveNodesChart(nodes models.FilNodes) error {
-	nodesChart := e.GetNodesChart(nodes)
+	nodesChart, updateNodes := e.GetNodesChart(nodes)
 
 	err := e.InsertNodesChart(nodesChart).Error
 	if err != nil {
 		log.Printf("save nodes chart error, %s", err.Error())
+		return err
+	}
+	err = e.Orm.Model(&models.FilNodes{}).Where("node = ?", nodes.Node).Updates(updateNodes).Error
+	if err != nil {
+		log.Printf("update nodes error, %s", err.Error())
 		return err
 	}
 	return nil
@@ -165,19 +172,31 @@ func (e *ChartsExec) SavePoolChart(poolChart *models.FilPoolChart) error {
 
 func (e *ChartsExec) GetLastOneByTime(node models.FilNodes, time time.Time) models.NodesChart {
 	var lastOne models.NodesChart
-	e.Orm.Model(&models.NodesChart{}).Where("TO_DAYS(last_time) = TO_DAYS(?) AND node = ?", time, node.Node).Order("last_time DESC").First(&lastOne)
+	e.Orm.Model(&models.NodesChart{}).Where("last_time = ? AND node = ?", time, node.Node).First(&lastOne)
 	return lastOne
 }
 
 // 处理重新封装图表昨日和上月数据
-func (e *ChartsExec) GetNodesChart(nodes models.FilNodes) models.NodesChart {
+func (e *ChartsExec) GetNodesChart(nodes models.FilNodes) (models.NodesChart, UpdateNodesDelta) {
 	currentTime := time.Now()
-	lastDay := utils.SetTime(currentTime.AddDate(0, 0, -1), currentTime.Hour())
+	//lastDay := utils.SetTime(currentTime.AddDate(0, 0, -1), currentTime.Hour())
+	lastDay := currentTime.AddDate(0, 0, -1).Truncate(time.Hour)
 	lastOne := e.GetLastOneByTime(nodes, lastDay)
 
-	lastMonthLastDay := currentTime.AddDate(0, 0, -currentTime.Day())
+	lastMonthLastDay := currentTime.AddDate(0, 0, -30).Truncate(time.Hour)
 	lastMonthLastOne := e.GetLastOneByTime(nodes, lastMonthLastDay)
 
+	updateNodes := UpdateNodesDelta{}
+	// 24小时内算力增量 保存的是单位为GiB的算力
+	if lastOne.ID > 0 {
+		updateNodes.QualityAdjPowerDelta24h = nodes.QualityAdjPower.Sub(lastOne.QualityAdjPower).Mul(decimal.NewFromFloat(math.Pow10(6)))
+	} else {
+		updateNodes.QualityAdjPowerDelta24h = decimal.Zero
+	}
+	// 30天内算力增量 保存的是单位为GiB的算力
+	if lastMonthLastOne.ID > 0 {
+		updateNodes.QualityAdjPowerDelta30d = nodes.QualityAdjPower.Sub(lastMonthLastOne.QualityAdjPower).Mul(decimal.NewFromFloat(math.Pow10(6)))
+	}
 	nodesChart := models.NodesChart{
 		Node:                         nodes.Node,
 		AvailableBalance:             nodes.AvailableBalance,
@@ -185,7 +204,7 @@ func (e *ChartsExec) GetNodesChart(nodes models.FilNodes) models.NodesChart {
 		SectorPledgeBalance:          nodes.SectorPledgeBalance,
 		VestingFunds:                 nodes.VestingFunds,
 		Height:                       nodes.Height,
-		LastTime:                     utils.SetTime(currentTime, currentTime.Hour()),
+		LastTime:                     currentTime.Truncate(time.Hour),
 		RewardValue:                  nodes.RewardValue,
 		WeightedBlocks:               nodes.WeightedBlocks,
 		QualityAdjPower:              nodes.QualityAdjPower,
@@ -219,7 +238,7 @@ func (e *ChartsExec) GetNodesChart(nodes models.FilNodes) models.NodesChart {
 		TimeTag:                      nodes.TimeTag,
 	}
 
-	return nodesChart
+	return nodesChart, updateNodes
 }
 
 // getDeptMap 获取部门map key:子部门id value:父部门id
@@ -236,4 +255,9 @@ func (e *ChartsExec) getDeptMap() map[int]int {
 	}
 
 	return deptMap
+}
+
+type UpdateNodesDelta struct {
+	QualityAdjPowerDelta24h decimal.Decimal `json:"qualityAdjPowerDelta24h"`
+	QualityAdjPowerDelta30d decimal.Decimal `json:"qualityAdjPowerDelta30d"`
 }

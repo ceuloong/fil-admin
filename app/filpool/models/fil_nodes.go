@@ -2,6 +2,8 @@ package models
 
 import (
 	admin "fil-admin/cmd/migrate/migration/models"
+	"fil-admin/utils"
+	"fmt"
 	"log"
 	"time"
 
@@ -77,6 +79,7 @@ type FilNodes struct {
 	AverageWinRate             decimal.Decimal `json:"averageWinRate" gorm:"type:decimal(20, 4);comment:周中签率"`
 	Dept                       *admin.SysDept  `json:"dept"`
 	ChartList                  *[]NodesChart   `json:"chartList" gorm:"-"`
+	PowerDeltaShow             string          `json:"powerDeltaShow" gorm:"-"`
 	models.ModelTime
 	models.ControlBy
 }
@@ -97,6 +100,16 @@ func (e *FilNodes) GetId() interface{} {
 func (e *FilNodes) GetRewardAvailable() interface{} {
 	log.Printf("调用了吗。。。。。。。。。")
 	return e.RewardValue.Sub(e.VestingFunds)
+}
+
+func (e *FilNodes) GetReward() interface{} {
+	return e.RewardValue
+}
+
+func (e *FilNodes) GetPowerDeltaShow() string {
+	v, str := utils.DecimalPowerValue(e.QualityAdjPowerDelta24h.String())
+	e.PowerDeltaShow = fmt.Sprintf("%s %s", v, str)
+	return e.PowerDeltaShow
 }
 
 //func (e *FilNodes) AfterFind(_ *gorm.DB) error {

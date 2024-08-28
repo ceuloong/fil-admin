@@ -52,7 +52,7 @@ func (e *SendMsg) GetId() interface{} {
 func (e *SendMsg) GetTypeStr() interface{} {
 	switch e.Type {
 	case SectorsError:
-		return "扇区错误"
+		return "算力异常"
 	case HeightDelay:
 		return "高度延迟"
 	case LuckyLow:

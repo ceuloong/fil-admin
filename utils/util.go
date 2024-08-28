@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"math"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -27,4 +28,20 @@ func SetTime(now time.Time, hour int) time.Time {
 
 func UnixTimeToTime(timestamp int64) time.Time {
 	return time.Unix(timestamp, 0)
+}
+
+func DecimalPowerValue(str string) (decimal.Decimal, string) {
+	value, _ := decimal.NewFromString(str)
+	onethousand := decimal.NewFromFloat(math.Pow10(3))
+	if value.Abs().LessThan(onethousand) {
+		return value, "GiB"
+	} else {
+		v := value.Div(decimal.NewFromFloat(math.Pow10(3))).Round(4)
+		if v.Abs().LessThan(onethousand) {
+			return v, "TiB"
+		} else {
+			v = v.Div(decimal.NewFromFloat(1000)).Round(4)
+			return v, "PiB"
+		}
+	}
 }

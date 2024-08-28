@@ -28,10 +28,10 @@ type FilNodes struct {
 	PowerGrade              string          `json:"powerGrade" gorm:"type:varchar(50);comment:PowerGrade"`
 	SectorSize              string          `json:"sectorSize" gorm:"type:varchar(50);comment:扇区大小"`
 	SectorStatus            string          `json:"sectorStatus" gorm:"type:varchar(255);comment:SectorStatus"`
-	SectorTotal             int             `gorm:"type:int"`
-	SectorEffective         int             `gorm:"type:int"`
-	SectorError             int             `gorm:"type:int"`
-	SectorRecovering        int             `gorm:"type:int"`
+	SectorTotal             int             `gorm:"type:int" json:"sectorTotal"`
+	SectorEffective         int             `gorm:"type:int" json:"sectorEffective"`
+	SectorError             int             `gorm:"type:int" json:"sectorError"`
+	SectorRecovering        int             `gorm:"type:int" json:"sectorRecovering"`
 	Status                  string          `json:"status" gorm:"type:int;comment:节点状态默认 1可用   0下架"`
 	Type                    string          `json:"type" gorm:"type:int;comment:节点类型 联合类型"`
 	EndTime                 time.Time       `json:"endTime" gorm:"type:datetime;comment:节点结束时间"`
@@ -41,6 +41,7 @@ type FilNodes struct {
 	MiningEfficiency        decimal.Decimal `json:"miningEfficiency" gorm:"type:decimal(20,8)"`
 	Height                  int             `json:"height" gorm:"type:int;comment:Height"`
 	SyncStatus              bool            `json:"syncStatus" gorm:"type:int;comment:同步状态"`
+	PowerDeltaShow          string          `json:"powerDeltaShow"`
 }
 
 func (FilNodes) TableName() string {
@@ -49,33 +50,35 @@ func (FilNodes) TableName() string {
 
 func (s *FilNodes) Generate(node models2.FilNodes) FilNodes {
 	return FilNodes{
-		Model:               models.Model{Id: node.Id},
-		Node:                node.Node,
-		MsgCount:            node.MsgCount,
-		SectorType:          node.SectorType,
-		CreateTime:          node.CreateTime,
-		AvailableBalance:    node.AvailableBalance.RoundDown(2),
-		Balance:             node.Balance.RoundDown(2),
-		SectorPledgeBalance: node.SectorPledgeBalance.RoundDown(2),
-		VestingFunds:        node.VestingFunds.RoundDown(2),
-		RewardValue:         node.RewardValue.RoundDown(2),
-		WeightedBlocks:      node.WeightedBlocks,
-		QualityAdjPower:     node.QualityAdjPower,
-		PowerUnit:           node.PowerUnit,
-		PowerPoint:          node.PowerPoint,
-		PowerGrade:          node.PowerGrade,
-		SectorSize:          node.SectorSize,
-		SectorStatus:        node.SectorStatus,
-		SectorTotal:         node.SectorTotal,
-		SectorEffective:     node.SectorEffective,
-		SectorError:         node.SectorError,
-		SectorRecovering:    node.SectorRecovering,
-		Status:              node.Status,
-		Type:                node.Type,
-		EndTime:             node.EndTime,
-		Title:               node.Title,
-		MiningEfficiency:    node.MiningEfficiency.Mul(decimal.NewFromInt(1000)).RoundDown(1),
-		Height:              node.Height,
-		SyncStatus:          node.OnLine,
+		Model:                   models.Model{Id: node.Id},
+		Node:                    node.Node,
+		MsgCount:                node.MsgCount,
+		SectorType:              node.SectorType,
+		CreateTime:              node.CreateTime,
+		AvailableBalance:        node.AvailableBalance.RoundDown(2),
+		Balance:                 node.Balance.RoundDown(2),
+		SectorPledgeBalance:     node.SectorPledgeBalance.RoundDown(2),
+		VestingFunds:            node.VestingFunds.RoundDown(2),
+		RewardValue:             node.RewardValue.RoundDown(2),
+		WeightedBlocks:          node.WeightedBlocks,
+		QualityAdjPower:         node.QualityAdjPower,
+		PowerUnit:               node.PowerUnit,
+		PowerPoint:              node.PowerPoint,
+		PowerGrade:              node.PowerGrade,
+		SectorSize:              node.SectorSize,
+		SectorStatus:            node.SectorStatus,
+		SectorTotal:             node.SectorTotal,
+		SectorEffective:         node.SectorEffective,
+		SectorError:             node.SectorError,
+		SectorRecovering:        node.SectorRecovering,
+		QualityAdjPowerDelta24h: node.QualityAdjPowerDelta24h.Div(decimal.NewFromInt(1000)).RoundDown(1),
+		PowerDeltaShow:          node.GetPowerDeltaShow(),
+		Status:                  node.Status,
+		Type:                    node.Type,
+		EndTime:                 node.EndTime,
+		Title:                   node.Title,
+		MiningEfficiency:        node.MiningEfficiency.Mul(decimal.NewFromInt(1000)).RoundDown(1),
+		Height:                  node.Height,
+		SyncStatus:              node.OnLine,
 	}
 }

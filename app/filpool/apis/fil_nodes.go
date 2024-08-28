@@ -78,6 +78,7 @@ func (e FilNodes) GetPage(c *gin.Context) {
 		} else {
 			filNodes.Tag = "green"
 		}
+		filNodes.PowerDeltaShow = filNodes.GetPowerDeltaShow()
 		newList = append(newList, filNodes)
 
 		poolIndex.AvailableBalance = poolIndex.AvailableBalance.Add(filNodes.AvailableBalance)
@@ -98,6 +99,10 @@ func (e FilNodes) GetPage(c *gin.Context) {
 	if luckyCount > 0 {
 		poolIndex.LuckyValue24h = poolIndex.LuckyValue24h.Div(decimal.NewFromInt(luckyCount))
 	}
+	poolIndex.QualityAdjPowerDelta24h = poolIndex.QualityAdjPowerDelta24h.Div(decimal.NewFromInt(1000))
+	v, str := utils.DecimalPowerValue(poolIndex.QualityAdjPowerDelta24h.String())
+	poolIndex.PowerDeltaShow = fmt.Sprintf("%s %s", v, str)
+
 	poolIndex.NodesList = &newList
 
 	e.PageOK(poolIndex, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
@@ -486,7 +491,8 @@ func (e FilNodes) NodesTotal(c *gin.Context) {
 		total.MiningEfficiency = total.MiningEfficiency.Div(decimal.NewFromInt(efficiency))
 	}
 	total.TotalCount = (int)(count)
-
+	v, str := utils.DecimalPowerValue(total.QualityAdjPowerDelta24h.String())
+	total.PowerDeltaShow = fmt.Sprintf("%s %s", v, str)
 	total = total.SetScale(total)
 
 	e.OK(total, "查询成功")

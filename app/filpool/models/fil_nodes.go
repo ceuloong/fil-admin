@@ -108,7 +108,11 @@ func (e *FilNodes) GetReward() interface{} {
 
 func (e *FilNodes) GetPowerDeltaShow() string {
 	v, str := utils.DecimalPowerValue(e.QualityAdjPowerDelta24h.String())
-	e.PowerDeltaShow = fmt.Sprintf("%s %s", v, str)
+	if v.Equal(decimal.Zero) {
+		e.PowerDeltaShow = "-"
+	} else {
+		e.PowerDeltaShow = fmt.Sprintf("%s %s", v, str)
+	}
 	return e.PowerDeltaShow
 }
 

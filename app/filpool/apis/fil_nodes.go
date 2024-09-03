@@ -492,6 +492,8 @@ func (e FilNodes) NodesTotal(c *gin.Context) {
 	}
 	total.TotalCount = (int)(count)
 	v, str := utils.DecimalPowerValue(total.QualityAdjPowerDelta24h.String())
+	total.QualityAdjPowerDelta24h = v
+	total.PowerDeltaUnit = str
 	total.PowerDeltaShow = fmt.Sprintf("%s %s", v, str)
 	total = total.SetScale(total)
 

@@ -99,6 +99,7 @@ type NodesTotal struct {
 	NodesList               *[]FilNodes     `json:"nodesList"`
 	RoleId                  int             `json:"roleId"`
 	TotalCount              int             `json:"totalCount"`
+	PowerDeltaUnit          string          `json:"powerDeltaUnit"`
 	PowerDeltaShow          string          `json:"powerDeltaShow"`
 }
 
@@ -111,7 +112,7 @@ func (e *NodesTotal) SetScale(total NodesTotal) NodesTotal {
 	total.TotalRewards24h = total.TotalRewards24h.RoundDown(2)
 	total.LuckyValue24h = total.LuckyValue24h.RoundDown(4)
 	total.MiningEfficiency = total.MiningEfficiency.Mul(decimal.NewFromInt(1000)).RoundDown(1)
-	total.QualityAdjPowerDelta24h = total.QualityAdjPowerDelta24h.Div(decimal.NewFromInt(1000)).RoundDown(2)
+	total.QualityAdjPowerDelta24h = total.QualityAdjPowerDelta24h.RoundDown(2)
 
 	return total
 }

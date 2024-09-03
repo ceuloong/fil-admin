@@ -264,3 +264,25 @@ func (e *SysUser) GetProfile(c *dto.SysUserById, user *models.SysUser, roles *[]
 
 	return nil
 }
+
+// UpdateDeviceToken 更新用户Token
+func (e *SysUser) UpdateDeviceToken(c *dto.UpdateSysUserDeviceTokenReq, p *actions.DataPermission) error {
+	var err error
+	var model models.SysUser
+	db := e.Orm.Scopes(
+		actions.Permission(model.TableName(), p),
+	).First(&model, c.GetId())
+	if err = db.Error; err != nil {
+		e.Log.Errorf("Service UpdateSysUser error: %s", err)
+		return err
+	}
+	if db.RowsAffected == 0 {
+		return errors.New("无权更新该数据")
+	}
+	err = e.Orm.Table(model.TableName()).Where("user_id =? ", c.UserId).Updates(c).Error
+	if err != nil {
+		e.Log.Errorf("Service UpdateSysUserDeviceToken error: %s", err)
+		return err
+	}
+	return nil
+}

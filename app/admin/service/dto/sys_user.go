@@ -88,6 +88,24 @@ func (s *UpdateSysUserStatusReq) Generate(model *models.SysUser) {
 	model.Status = s.Status
 }
 
+type UpdateSysUserDeviceTokenReq struct {
+	UserId      int    `json:"userId" comment:"用户ID"` // 用户ID
+	DeviceToken string `json:"deviceToken" comment:"设备唯一标识"`
+	common.ControlBy
+	common.ModelTime
+}
+
+func (s *UpdateSysUserDeviceTokenReq) GetId() interface{} {
+	return s.UserId
+}
+
+func (s *UpdateSysUserDeviceTokenReq) Generate(model *models.SysUser) {
+	if s.UserId != 0 {
+		model.UserId = s.UserId
+	}
+	model.DeviceToken = s.DeviceToken
+}
+
 type SysUserInsertReq struct {
 	UserId   int    `json:"userId" comment:"用户ID"` // 用户ID
 	Username string `json:"username" comment:"用户名" vd:"len($)>0"`

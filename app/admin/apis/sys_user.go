@@ -505,3 +505,43 @@ func (e SysUser) GetInfo(c *gin.Context) {
 	mp["code"] = 200
 	e.OK(mp, "")
 }
+
+// UpdateToken 修改Token
+// @Summary 修改用户Token
+// @Description 获取JSON
+// @Tags 用户
+// @Accept  application/json
+// @Product application/json
+// @Param data body dto.UpdateSysUserStatusReq true "body"
+// @Success 200 {object} response.Response "{"code": 200, "data": [...]}"
+// @Router /api/v1/user/device_token [put]
+// @Security Bearer
+func (e SysUser) UpdateDeviceToken(c *gin.Context) {
+	s := service.SysUser{}
+	req := dto.UpdateSysUserDeviceTokenReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req, binding.JSON, nil).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	req.SetUpdateBy(user.GetUserId(c))
+	if req.UserId == 0 {
+		req.UserId = user.GetUserId(c)
+	}
+
+	//数据权限检查
+	p := actions.GetPermissionFromContext(c)
+
+	err = s.UpdateDeviceToken(&req, p)
+	if err != nil {
+		e.Logger.Error(err)
+		return
+	}
+	e.OK(req.GetId(), "更新成功")
+}

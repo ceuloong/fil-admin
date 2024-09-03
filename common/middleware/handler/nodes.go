@@ -2,6 +2,7 @@ package handler
 
 import (
 	models2 "fil-admin/app/filpool/models"
+	"fil-admin/utils"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -49,6 +50,8 @@ func (FilNodes) TableName() string {
 }
 
 func (s *FilNodes) Generate(node models2.FilNodes) FilNodes {
+	v, _ := utils.DecimalPowerValue(node.QualityAdjPowerDelta24h.String())
+	node.QualityAdjPowerDelta24h = v
 	return FilNodes{
 		Model:                   models.Model{Id: node.Id},
 		Node:                    node.Node,
@@ -71,7 +74,7 @@ func (s *FilNodes) Generate(node models2.FilNodes) FilNodes {
 		SectorEffective:         node.SectorEffective,
 		SectorError:             node.SectorError,
 		SectorRecovering:        node.SectorRecovering,
-		QualityAdjPowerDelta24h: node.QualityAdjPowerDelta24h.Div(decimal.NewFromInt(1000)).RoundDown(1),
+		QualityAdjPowerDelta24h: node.QualityAdjPowerDelta24h.RoundDown(1),
 		PowerDeltaShow:          node.GetPowerDeltaShow(),
 		Status:                  node.Status,
 		Type:                    node.Type,

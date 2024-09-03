@@ -23,6 +23,7 @@ type SysUser struct {
 	Remark      string   `json:"remark" gorm:"size:255;comment:备注"`
 	Status      string   `json:"status" gorm:"size:4;comment:状态"`
 	DeviceToken string   `json:"deviceToken" gorm:"size:255;comment:用户推送信息唯一标识"`
+	TokenStatus int      `json:"tokenStatus" gorm:"size:4;comment:token状态"`
 	DeptIds     []int    `json:"deptIds" gorm:"-"`
 	PostIds     []int    `json:"postIds" gorm:"-"`
 	RoleIds     []int    `json:"roleIds" gorm:"-"`

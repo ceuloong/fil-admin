@@ -113,6 +113,7 @@ func Apns2Push(deviceToken string, title string, content string) {
 	path, _ := os.Getwd()
 	log.Default().Printf("Cert Success，path=%s", path)
 	if !config.ExtConfig.Apns2.Push {
+		log.Println("Apns2 Push is disabled")
 		return
 	}
 

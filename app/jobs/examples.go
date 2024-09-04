@@ -13,6 +13,7 @@ func InitJob() {
 		"ExamplesOne": ExamplesOne{},
 		"ChartsExec":  ChartsExec{},
 		"BlockStats":  BlockStatsExec{},
+		"Apns2Push":   Apns2PushExec{},
 	}
 }
 

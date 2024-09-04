@@ -14,6 +14,7 @@ type SendMsgGetPageReq struct {
 	Node           []string `form:"node" search:"type:in;column:node;table:send_msg" comment:"节点"`
 	Content        string   `form:"content"  search:"type:contains;column:content;table:send_msg" comment:""`
 	Type           string   `form:"type"  search:"type:exact;column:type;table:send_msg" comment:"消息类型"`
+	SendStatus     string   `form:"sendStatus"  search:"type:exact;column:send_status;table:send_msg" comment:"发送状态"`
 	SendMsgOrder
 }
 

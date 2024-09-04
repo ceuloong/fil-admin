@@ -1,6 +1,6 @@
 module fil-admin
 
-go 1.21
+go 1.23
 
 require (
 	github.com/360EntSecGroup-Skylar/excelize v1.4.1
@@ -24,6 +24,7 @@ require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/shirou/gopsutil/v3 v3.23.10
 	github.com/shopspring/decimal v1.3.1
+	github.com/sideshow/apns2 v0.24.0
 	github.com/spf13/cobra v1.7.0
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0

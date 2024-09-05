@@ -85,9 +85,9 @@ func (e *Apns2PushExec) GetUserDeviceToken(miner string) ([]sysModels.SysUser, e
 		return nil, nil
 	}
 
-	var selSql = fmt.Sprintf("SELECT `sys_user`.`user_id`,`sys_user`.`username`,`sys_user`.`dept_id`,`sys_user`.`device_token`, `sys_user`.`token_status` FROM `sys_user` left join `sys_dept` on `sys_dept`.`dept_id` = `sys_user`.`dept_id` WHERE (`sys_dept`.`dept_path` like '/%d/' OR `sys_user`.`role_id` = 1) AND `sys_user`.`deleted_at` IS NULL AND `sys_user`.`token_status` = 1;", node.DeptId)
+	//selSql := fmt.Sprintf("SELECT `sys_user`.`user_id`,`sys_user`.`username`,`sys_user`.`dept_id`,`sys_user`.`device_token`, `sys_user`.`token_status` FROM `sys_user` left join `sys_dept` on `sys_dept`.`dept_id` = `sys_user`.`dept_id` WHERE (`sys_dept`.`dept_path` like '%s' OR `sys_user`.`role_id` = 1) AND `sys_user`.`deleted_at` IS NULL AND `sys_user`.`token_status` = 1;", "%/"+strconv.Itoa(node.DeptId)+"/%")
 	var users []sysModels.SysUser
-	err := e.Orm.Exec(selSql).Find(&users).Error
+	err := e.Orm.Model(&sysModels.SysUser{}).Where("(dept_id = ? OR role_id = 1) AND token_status = 1 AND device_token IS NOT NULL", node.DeptId).Find(&users).Error
 	if err != nil {
 		e.Log.Errorf("Apns2PushExec GetUserDeviceToken error:%s \r\n", err)
 		return nil, err
@@ -143,7 +143,7 @@ func Apns2Push(deviceToken string, title string, content string) {
 	fmt.Printf("%v %v %v\n", res.StatusCode, res.ApnsID, res.Reason)
 }
 
-func pathWorkDir(certPath string) string {
+func PathWorkDir(certPath string) string {
 	workDir, _ := os.Getwd()
 	return fmt.Sprintf("%s/%s", workDir, certPath)
 }

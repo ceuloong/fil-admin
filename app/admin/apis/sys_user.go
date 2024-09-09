@@ -531,9 +531,8 @@ func (e SysUser) UpdateDeviceToken(c *gin.Context) {
 	}
 
 	req.SetUpdateBy(user.GetUserId(c))
-	if req.UserId == 0 {
-		req.UserId = user.GetUserId(c)
-	}
+
+	req.UserId = user.GetUserId(c)
 
 	//数据权限检查
 	p := actions.GetPermissionFromContext(c)

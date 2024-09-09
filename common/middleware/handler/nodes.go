@@ -3,6 +3,7 @@ package handler
 import (
 	models2 "fil-admin/app/filpool/models"
 	"fil-admin/utils"
+	"math"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -42,7 +43,8 @@ type FilNodes struct {
 	MiningEfficiency        decimal.Decimal `json:"miningEfficiency" gorm:"type:decimal(20,8)"`
 	Height                  int             `json:"height" gorm:"type:int;comment:Height"`
 	SyncStatus              bool            `json:"syncStatus" gorm:"type:int;comment:同步状态"`
-	PowerDeltaShow          string          `json:"powerDeltaShow"`
+	PowerDeltaShow          string          `json:"powerDeltaShow" gorm:"-"`
+	PowerDeltaUnit          string          `json:"powerDeltaUnit" gorm:"-"`
 }
 
 func (FilNodes) TableName() string {
@@ -50,8 +52,8 @@ func (FilNodes) TableName() string {
 }
 
 func (s *FilNodes) Generate(node models2.FilNodes) FilNodes {
-	v, _ := utils.DecimalPowerValue(node.QualityAdjPowerDelta24h.String())
-	node.QualityAdjPowerDelta24h = v
+	v, str := utils.DecimalPowerValue(node.QualityAdjPowerDelta24h.String())
+	v1, str1 := utils.DecimalPowerValue(node.QualityAdjPower.Mul(decimal.NewFromFloat(math.Pow10(6))).String())
 	return FilNodes{
 		Model:                   models.Model{Id: node.Id},
 		Node:                    node.Node,
@@ -64,8 +66,8 @@ func (s *FilNodes) Generate(node models2.FilNodes) FilNodes {
 		VestingFunds:            node.VestingFunds.RoundDown(2),
 		RewardValue:             node.RewardValue.RoundDown(2),
 		WeightedBlocks:          node.WeightedBlocks,
-		QualityAdjPower:         node.QualityAdjPower,
-		PowerUnit:               node.PowerUnit,
+		QualityAdjPower:         v1,
+		PowerUnit:               str1,
 		PowerPoint:              node.PowerPoint,
 		PowerGrade:              node.PowerGrade,
 		SectorSize:              node.SectorSize,
@@ -74,7 +76,8 @@ func (s *FilNodes) Generate(node models2.FilNodes) FilNodes {
 		SectorEffective:         node.SectorEffective,
 		SectorError:             node.SectorError,
 		SectorRecovering:        node.SectorRecovering,
-		QualityAdjPowerDelta24h: node.QualityAdjPowerDelta24h.RoundDown(1),
+		QualityAdjPowerDelta24h: v,
+		PowerDeltaUnit:          str,
 		PowerDeltaShow:          node.GetPowerDeltaShow(),
 		Status:                  node.Status,
 		Type:                    node.Type,

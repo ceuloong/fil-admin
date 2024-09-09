@@ -6,6 +6,7 @@ import (
 	"fil-admin/common/redis"
 	"fil-admin/utils"
 	"fmt"
+	"math"
 	"strconv"
 	"time"
 
@@ -78,8 +79,6 @@ func (e FilNodes) GetPage(c *gin.Context) {
 		} else {
 			filNodes.Tag = "green"
 		}
-		filNodes.PowerDeltaShow = filNodes.GetPowerDeltaShow()
-		newList = append(newList, filNodes)
 
 		poolIndex.AvailableBalance = poolIndex.AvailableBalance.Add(filNodes.AvailableBalance)
 		poolIndex.Balance = poolIndex.Balance.Add(filNodes.Balance)
@@ -95,13 +94,20 @@ func (e FilNodes) GetPage(c *gin.Context) {
 			luckyCount++
 		}
 		poolIndex.LuckyValue24h = poolIndex.LuckyValue24h.Add(filNodes.LuckyValue24h)
+
+		filNodes.PowerDeltaShow = filNodes.GetPowerDeltaShow()
+		v, str := utils.DecimalPowerValue(filNodes.QualityAdjPower.Mul(decimal.NewFromFloat(math.Pow10(6))).String())
+		filNodes.QualityAdjPower = v
+		filNodes.PowerUnit = str
+		newList = append(newList, filNodes)
 	}
 	if luckyCount > 0 {
 		poolIndex.LuckyValue24h = poolIndex.LuckyValue24h.Div(decimal.NewFromInt(luckyCount))
 	}
-	poolIndex.QualityAdjPowerDelta24h = poolIndex.QualityAdjPowerDelta24h.Div(decimal.NewFromInt(1000))
+
 	v, str := utils.DecimalPowerValue(poolIndex.QualityAdjPowerDelta24h.String())
 	poolIndex.PowerDeltaShow = fmt.Sprintf("%s %s", v, str)
+	poolIndex.PowerDeltaUnit = str
 
 	poolIndex.NodesList = &newList
 

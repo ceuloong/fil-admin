@@ -91,7 +91,7 @@ func (s *UpdateSysUserStatusReq) Generate(model *models.SysUser) {
 type UpdateSysUserDeviceTokenReq struct {
 	UserId      int    `json:"userId" comment:"用户ID"` // 用户ID
 	DeviceToken string `json:"deviceToken" comment:"设备唯一标识"`
-	TokenStatus int    `json:"tokenStatus" comment:"token状态"`
+	TokenStatus int    `json:"status" comment:"token状态"`
 	common.ControlBy
 	common.ModelTime
 }

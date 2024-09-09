@@ -86,6 +86,7 @@ type NodesTotal struct {
 	RewardValue             decimal.Decimal `json:"rewardValue"`
 	WeightedBlocks          int             `json:"weightedBlocks"`
 	QualityAdjPower         decimal.Decimal `json:"qualityAdjPower"`
+	PowerUnit               string          `json:"powerUnit"`
 	PowerPoint              decimal.Decimal `json:"powerPoint"`
 	ControlBalance          decimal.Decimal `json:"controlBalance"`
 	BlocksMined24h          int             `json:"blocksMined24H"`

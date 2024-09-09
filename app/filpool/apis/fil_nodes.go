@@ -496,6 +496,9 @@ func (e FilNodes) NodesTotal(c *gin.Context) {
 	if condition := efficiency > 0; condition {
 		total.MiningEfficiency = total.MiningEfficiency.Div(decimal.NewFromInt(efficiency))
 	}
+	v1, str1 := utils.DecimalPowerValue(total.QualityAdjPower.Mul(decimal.NewFromFloat(math.Pow10(6))).String())
+	total.QualityAdjPower = v1
+	total.PowerUnit = str1
 	total.TotalCount = (int)(count)
 	v, str := utils.DecimalPowerValue(total.QualityAdjPowerDelta24h.String())
 	total.QualityAdjPowerDelta24h = v

@@ -179,11 +179,11 @@ func (e *ChartsExec) GetLastOneByTime(node models.FilNodes, time time.Time) mode
 // 处理重新封装图表昨日和上月数据
 func (e *ChartsExec) GetNodesChart(nodes models.FilNodes) (models.NodesChart, UpdateNodesDelta) {
 	currentTime := time.Now()
-	//lastDay := utils.SetTime(currentTime.AddDate(0, 0, -1), currentTime.Hour())
 	lastDay := currentTime.AddDate(0, 0, -1).Truncate(time.Hour)
 	lastOne := e.GetLastOneByTime(nodes, lastDay)
 
-	lastMonthLastDay := currentTime.AddDate(0, 0, -currentTime.Day()).Truncate(time.Hour)
+	//lastMonthLastDay := currentTime.AddDate(0, 0, -currentTime.Day()).Truncate(time.Hour)
+	lastMonthLastDay := utils.SetTime(currentTime.AddDate(0, 0, -currentTime.Day()), 0)
 	lastMonthLastOne := e.GetLastOneByTime(nodes, lastMonthLastDay)
 
 	updateNodes := UpdateNodesDelta{}

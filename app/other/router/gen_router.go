@@ -3,6 +3,7 @@ package router
 import (
 	"fil-admin/app/admin/apis"
 	"fil-admin/app/other/apis/tools"
+	"fil-admin/common/middleware/handler"
 
 	jwt "github.com/ceuloong/fil-admin-core/sdk/pkg/jwtauth"
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,8 @@ func sysNoCheckRoleRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddlew
 	{
 		sys := apis.System{}
 		r1.GET("/captcha", sys.GenerateCaptchaHandler)
+		r1.GET("/download", handler.Download)
+		r1.GET("/filprice", handler.FilPrice)
 	}
 
 	r := v1.Group("").Use(authMiddleware.MiddlewareFunc())

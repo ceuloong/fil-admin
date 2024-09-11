@@ -183,7 +183,7 @@ func (e *ChartsExec) GetNodesChart(nodes models.FilNodes) (models.NodesChart, Up
 	lastOne := e.GetLastOneByTime(nodes, lastDay)
 
 	//lastMonthLastDay := currentTime.AddDate(0, 0, -currentTime.Day()).Truncate(time.Hour)
-	lastMonthLastDay := utils.SetTime(currentTime.AddDate(0, 0, -currentTime.Day()), 0)
+	lastMonthLastDay := utils.SetTime(currentTime.AddDate(0, 0, -currentTime.Day()+1), 0)
 	lastMonthLastOne := e.GetLastOneByTime(nodes, lastMonthLastDay)
 
 	updateNodes := UpdateNodesDelta{}

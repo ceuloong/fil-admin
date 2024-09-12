@@ -8,6 +8,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/ceuloong/fil-admin-core/sdk/config"
 	"github.com/ceuloong/fil-admin-core/sdk/service"
 	"github.com/shopspring/decimal"
 	"github.com/tealeg/xlsx"
@@ -83,13 +84,14 @@ func (e *FilDistribution) Update(c *dto.FilDistributionUpdateReq, p *actions.Dat
 	var data = models.FilDistribution{}
 	db := e.Orm.Scopes(
 		actions.Permission(data.TableName(), p),
-	).First(&data, c.GetId())
+	).Where("status = 1").First(&data, c.GetId())
 	if err = db.Error; err != nil {
 		e.Log.Errorf("FilDistributionService Update error:%s \r\n", err)
 		return err
 	}
+	c.Generate(&data)
 
-	err = e.Orm.Table(data.TableName()).Updates(c).Error
+	err = e.Orm.Table(data.TableName()).Updates(data).Error
 	if err != nil {
 		e.Log.Errorf("FilDistributionService Update error:%s \r\n", err)
 		return err
@@ -100,22 +102,34 @@ func (e *FilDistribution) Update(c *dto.FilDistributionUpdateReq, p *actions.Dat
 	return nil
 }
 
-// UpdateStatus 修改FilDistribution对象
-func (e *FilDistribution) UpdateStatus(c *dto.FilDistributionUpdateStatusReq, p *actions.DataPermission) error {
+// UpdateStatus 修改FilDistribution对象,事务处理，同时更新FilNodes
+func (e *FilDistribution) UpdateStatus(c *dto.FilDistributionUpdateStatusReq, n *dto.FilNodesUpdateDistributeReq, p *actions.DataPermission) error {
 	var err error
-	var data = models.FilDistribution{}
-	db := e.Orm.Scopes(
-		actions.Permission(data.TableName(), p),
-	).First(&data, c.GetId())
-
+	tx := e.Orm
+	if config.DatabaseConfig.Driver != "sqlite3" {
+		tx := e.Orm.Begin()
+		defer func() {
+			if err != nil {
+				tx.Rollback()
+			} else {
+				tx.Commit()
+			}
+		}()
+	}
+	var model = models.FilDistribution{}
+	var fNode = models.FilNodes{}
+	tx.Model(&model).First(&model, c.GetId())
+	tx.Model(&fNode).First(&fNode, n.GetId())
+	//c.Generate(&model)
+	db := tx.Model(&model).Where("id = ?", c.GetId()).Updates(&c)
 	if err = db.Error; err != nil {
 		e.Log.Errorf("FilDistributionService Update error:%s \r\n", err)
 		return err
 	}
-
-	err = e.Orm.Table(data.TableName()).Updates(c).Error
+	//n.Generate(&fNode)
+	err = tx.Model(&fNode).Where("id = ?", n.GetId()).Updates(&n).Error
 	if err != nil {
-		e.Log.Errorf("FilDistributionService Update error:%s \r\n", err)
+		e.Log.Errorf("FilNode Update error:%s \r\n", err)
 		return err
 	}
 	if db.RowsAffected == 0 {

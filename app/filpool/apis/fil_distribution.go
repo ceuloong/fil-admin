@@ -351,7 +351,6 @@ func (e FilDistribution) DealDistribute(c *gin.Context) {
 			Status: 2,
 		}
 		updateReq.SetUpdateBy(user.GetUserId(c))
-		s.UpdateStatus(&updateReq, p)
 
 		node := m[oneDis.Node]
 		updateNodeReq := dto.FilNodesUpdateDistributeReq{
@@ -362,7 +361,8 @@ func (e FilDistribution) DealDistribute(c *gin.Context) {
 			HasTransfer:                decimal.Zero,
 		}
 		updateNodeReq.SetUpdateBy(user.GetUserId(c))
-		nodeS.UpdateDistribute(&updateNodeReq, p)
+
+		s.UpdateStatus(&updateReq, &updateNodeReq, p)
 	}
 
 	e.OK(req.GetId(), "分币记录更新成功")

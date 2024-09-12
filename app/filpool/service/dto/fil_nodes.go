@@ -175,6 +175,7 @@ type FilNodesUpdateDistributeReq struct {
 	LastDistributeTime         time.Time       `json:"lastDistributeTime" comment:"最后一次分币时间"`
 	HasTransfer                decimal.Decimal `json:"hasTransfer" comment:"分币前已转出数量，分完币清0"`
 	common.ControlBy
+	common.ModelTime
 }
 
 func (s *FilNodesUpdateDistributeReq) Generate(model *models.FilNodes) {
@@ -184,6 +185,7 @@ func (s *FilNodesUpdateDistributeReq) Generate(model *models.FilNodes) {
 	model.HasRealDistribute = s.HasRealDistribute
 	model.LastDisSectorPledgeBalance = s.LastDisSectorPledgeBalance
 	model.LastDistributeTime = s.LastDistributeTime
+	model.HasTransfer = s.HasTransfer
 }
 
 func (s *FilNodesUpdateDistributeReq) GetId() interface{} {

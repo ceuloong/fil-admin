@@ -87,7 +87,7 @@ func (s *FilDistributionInsertReq) GetId() interface{} {
 }
 
 type FilDistributionUpdateReq struct {
-	Id               int             `json:"-" comment:"编码"` // 编码
+	Id               int             `json:"id" comment:"编码"` // 编码
 	NodeId           int             `json:"nodeId" comment:"节点ID"`
 	Node             string          `json:"node" comment:"节点名称"`
 	AvailableBalance decimal.Decimal `json:"availableBalance" comment:"可用余额"`
@@ -130,6 +130,7 @@ type FilDistributionUpdateStatusReq struct {
 	Id     int `json:"-" comment:"编码"` // 编码
 	Status int `json:"status" comment:"分币状态"`
 	common.ControlBy
+	common.ModelTime
 }
 
 func (s *FilDistributionUpdateStatusReq) Generate(model *models.FilDistribution) {
@@ -137,7 +138,7 @@ func (s *FilDistributionUpdateStatusReq) Generate(model *models.FilDistribution)
 		model.Model = common.Model{Id: s.Id}
 	}
 	model.Status = s.Status
-	//model.UpdateBy = s.UpdateBy
+	model.UpdateBy = s.UpdateBy
 }
 
 func (s *FilDistributionUpdateStatusReq) GetId() interface{} {

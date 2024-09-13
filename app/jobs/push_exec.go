@@ -120,15 +120,7 @@ func Apns2Push(deviceToken string, title string, content string) {
 	notification := &apns2.Notification{}
 	notification.DeviceToken = deviceToken
 	notification.Topic = topic
-	notification.Payload = []byte(`{
-		"aps" : {
-			"alert" : {
-				"title" : "` + title + `",
-				"body" : "` + content + `"
-			}
-		}
-	}`) // See Payload section below
-
+	notification.Payload = []byte(`{"aps" : {"alert" : {` + content + `}}`) // See Payload section below
 	// Use Production() for apps published to the app store or installed as an ad-hoc distribution
 	client := apns2.NewClient(cert)
 	if config.ExtConfig.Apns2.Prod {

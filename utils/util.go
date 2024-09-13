@@ -36,11 +36,11 @@ func DecimalPowerValue(str string) (decimal.Decimal, string) {
 	if value.Abs().LessThan(onethousand) {
 		return value, "GiB"
 	} else {
-		v := value.Div(decimal.NewFromFloat(math.Pow10(3))).Round(4)
+		v := value.Div(decimal.NewFromFloat(math.Pow10(3))).RoundDown(2)
 		if v.Abs().LessThan(onethousand) {
 			return v, "TiB"
 		} else {
-			v = v.Div(decimal.NewFromFloat(1000)).Round(4)
+			v = v.Div(decimal.NewFromFloat(1000)).RoundDown(2)
 			return v, "PiB"
 		}
 	}

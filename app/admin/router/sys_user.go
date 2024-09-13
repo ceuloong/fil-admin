@@ -32,7 +32,7 @@ func registerSysUserRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddle
 		user.PUT("/pwd/set", api.UpdatePwd)
 		user.PUT("/pwd/reset", api.ResetPwd)
 		user.PUT("/status", api.UpdateStatus)
-		user.PUT("/device_token", api.UpdateDeviceToken)
+		user.POST("/device_token", api.UpdateDeviceToken)
 		user.GET("/getuser", api.GetUser)
 	}
 	v1auth := v1.Group("").Use(authMiddleware.MiddlewareFunc())

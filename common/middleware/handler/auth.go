@@ -102,7 +102,7 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 	sysUser, role, dept, e := loginVals.GetUser(db)
 	if e == nil {
 		username = loginVals.Username
-
+		UpdateDeviceToken(c, sysUser.UserId, 1)
 		return map[string]interface{}{"user": sysUser, "role": role, "dept": dept}, nil
 	} else {
 		msg = "登录失败"
@@ -157,12 +157,29 @@ func LoginLogToDB(c *gin.Context, status string, msg string, username string) {
 // @Router /logout [post]
 // @Security Bearer
 func LogOut(c *gin.Context) {
+	UpdateDeviceToken(c, user.GetUserId(c), 2)
 	LoginLogToDB(c, "2", "退出成功", user.GetUserName(c))
 	c.JSON(http.StatusOK, gin.H{
 		"code": 200,
 		"msg":  "退出成功",
 	})
 
+}
+
+func UpdateDeviceToken(c *gin.Context, userId int, token_status int) {
+	log := api.GetRequestLogger(c)
+	db, err := pkg.GetOrm(c)
+	if err != nil {
+		log.Errorf("get db error, %s", err.Error())
+		response.Error(c, 500, err, "数据库连接获取失败")
+		return
+	}
+	err = db.Table("sys_user").Where("user_id = ?", userId).Update("token_status", token_status).Error
+	if err != nil {
+		log.Errorf("update token_status error, %s", err.Error())
+		response.Error(c, 500, err, "数据库连接获取失败")
+		return
+	}
 }
 
 func Authorizator(data interface{}, c *gin.Context) bool {

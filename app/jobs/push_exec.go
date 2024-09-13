@@ -1,6 +1,7 @@
 package jobs
 
 import (
+	"encoding/json"
 	sysModels "fil-admin/app/admin/models"
 	"fil-admin/app/filpool/models"
 	"fil-admin/common/service"
@@ -95,6 +96,14 @@ func (e *Apns2PushExec) GetUserDeviceToken(miner string) ([]sysModels.SysUser, e
 	return users, nil
 }
 
+type Aps struct {
+	Aps Alert `json:"aps"`
+}
+
+type Alert struct {
+	Alert string `json:"alert"`
+}
+
 // Apns2Push 推送消息
 func Apns2Push(deviceToken string, title string, content string) {
 	certPath := config.ExtConfig.Apns2.CertPath
@@ -117,10 +126,18 @@ func Apns2Push(deviceToken string, title string, content string) {
 		return
 	}
 
+	a := Alert{
+		Alert: content,
+	}
+	aps := Aps{
+		Aps: a,
+	}
+
+	jsonStr, _ := json.Marshal(aps)
 	notification := &apns2.Notification{}
 	notification.DeviceToken = deviceToken
 	notification.Topic = topic
-	notification.Payload = []byte(`{"aps" : {"alert" : {` + content + `}}`) // See Payload section below
+	notification.Payload = []byte(jsonStr) // See Payload section below
 	// Use Production() for apps published to the app store or installed as an ad-hoc distribution
 	client := apns2.NewClient(cert)
 	if config.ExtConfig.Apns2.Prod {

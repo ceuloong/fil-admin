@@ -7,10 +7,11 @@ import (
 	"fil-admin/common/service"
 	"fil-admin/config"
 	"fmt"
-	"log"
 	"os"
 	"time"
 
+	log "github.com/ceuloong/fil-admin-core/logger"
+	"github.com/ceuloong/fil-admin-core/sdk/pkg"
 	"github.com/sideshow/apns2"
 	"github.com/sideshow/apns2/certificate"
 )
@@ -18,6 +19,29 @@ import (
 // PushExec struct
 type Apns2PushExec struct {
 	service.Service
+}
+
+var client *apns2.Client
+
+func InitPushClient() {
+	certPath := config.ExtConfig.Apns2.CertPath
+
+	if certPath == "" {
+		log.Info("CertPath is required")
+		return
+	}
+	password := config.ExtConfig.Apns2.Password
+	cert, err := certificate.FromP12File(certPath, password)
+	if err != nil {
+		log.Info("Cert Error:", err)
+		return
+	}
+	// Use Production() for apps published to the app store or installed as an ad-hoc distribution
+	client = apns2.NewClient(cert)
+	if config.ExtConfig.Apns2.Prod {
+		client = client.Production()
+	}
+	log.Info(pkg.Green("Apns2 Push Client Init Success"))
 }
 
 func (e Apns2PushExec) Exec(arg interface{}) error {
@@ -33,7 +57,7 @@ func (e Apns2PushExec) Exec(arg interface{}) error {
 	list := []models.SendMsg{}
 	e.FindNeedSendList(&list)
 	if len(list) == 0 {
-		log.Printf("No message to send. \r\n")
+		log.Info("No message to send. \r\n")
 		return nil
 	}
 	sendMap := make(map[string][]sysModels.SysUser)
@@ -41,16 +65,16 @@ func (e Apns2PushExec) Exec(arg interface{}) error {
 		if sendMap[sendMsg.Node] == nil {
 			users, err := e.GetUserDeviceToken(sendMsg.Node)
 			if err != nil {
-				log.Printf("failed to get user device token: %s \r\n", err)
+				log.Info("failed to get user device token: %s \r\n", err)
 				continue
 			}
 			sendMap[sendMsg.Node] = users
 		}
 		users := sendMap[sendMsg.Node]
 		e.UpdateSendStatus(&sendMsg)
-		for _, user := range users {
-			Apns2Push(user.DeviceToken, sendMsg.Title, sendMsg.Content)
-		}
+
+		Apns2Pushs(users, sendMsg.Title, sendMsg.Content)
+
 	}
 
 	return nil
@@ -82,7 +106,7 @@ func (e *Apns2PushExec) GetUserDeviceToken(miner string) ([]sysModels.SysUser, e
 	node := models.FilNodes{}
 	e.Orm.Model(&models.FilNodes{}).Where("node = ?", miner).First(&node)
 	if node.Id == 0 {
-		log.Printf("Node %s not exist.:\n", miner)
+		log.Info("Node %s not exist.:\n", miner)
 		return nil, nil
 	}
 
@@ -105,6 +129,7 @@ type Alert struct {
 }
 
 // Apns2Push 推送消息
+/**
 func Apns2Push(deviceToken string, title string, content string) {
 	certPath := config.ExtConfig.Apns2.CertPath
 	topic := config.ExtConfig.Apns2.Topic
@@ -150,6 +175,40 @@ func Apns2Push(deviceToken string, title string, content string) {
 	}
 
 	fmt.Printf("%v %v %v\n", res.StatusCode, res.ApnsID, res.Reason)
+}
+*/
+
+func Apns2Pushs(users []sysModels.SysUser, title string, content string) {
+	if !config.ExtConfig.Apns2.Push {
+		log.Info("Apns2 Push is disabled")
+		return
+	}
+	topic := config.ExtConfig.Apns2.Topic
+	if topic == "" {
+		log.Info("Topic is required")
+		return
+	}
+	a := Alert{
+		Alert: content,
+	}
+	aps := Aps{
+		Aps: a,
+	}
+	jsonStr, _ := json.Marshal(aps)
+	for _, user := range users {
+
+		notification := &apns2.Notification{}
+		notification.DeviceToken = user.DeviceToken
+		notification.Topic = topic
+		notification.Payload = []byte(jsonStr) // See Payload section below
+
+		res, err := client.Push(notification)
+		if err != nil {
+			log.Info("Error:", err)
+		}
+
+		fmt.Printf("%v %v %v\n", res.StatusCode, res.ApnsID, res.Reason)
+	}
 }
 
 func PathWorkDir(certPath string) string {

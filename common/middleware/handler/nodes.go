@@ -88,3 +88,20 @@ func (s *FilNodes) Generate(node models2.FilNodes) FilNodes {
 		SyncStatus:              node.OnLine,
 	}
 }
+
+type MinerSectors struct {
+	Miner           string    `json:"miner"`
+	SectorSize      string    `json:"sector_size"`
+	SectorStatus    string    `json:"sector_status"`
+	SectorEffective int       `json:"sector_effective"`
+	Sectors         []Sectors `json:"sectors"`
+}
+
+type Sectors struct {
+	Day       string `json:"day"`
+	From      int    `json:"from"`
+	To        int    `json:"to"`
+	SectorNum int    `json:"sectorNum"`
+	FromTo    string `json:"fromTo"`
+	Power     string `json:"power"`
+}

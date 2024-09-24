@@ -126,6 +126,25 @@ func (e *FilNodes) Get(d *dto.FilNodesGetReq, p *actions.DataPermission, model *
 	return nil
 }
 
+func (e *FilNodes) GetByMiner(d *dto.FilNodesGetPageReq, p *actions.DataPermission, model *models.FilNodes) error {
+	var data models.FilNodes
+
+	err := e.Orm.Model(&data).
+		Scopes(
+			actions.Permission(data.TableName(), p),
+		).First(model, "node = ?", d.Node).Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		err = errors.New("查看对象不存在或无权查看")
+		e.Log.Errorf("Service GetFilNodes error:%s \r\n", err)
+		return err
+	}
+	if err != nil {
+		e.Log.Errorf("db error:%s", err)
+		return err
+	}
+	return nil
+}
+
 // Insert 创建FilNodes对象
 func (e *FilNodes) Insert(c *dto.FilNodesInsertReq) error {
 	var err error

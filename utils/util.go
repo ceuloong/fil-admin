@@ -7,6 +7,10 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+const (
+	Layout = "2006-01-02 15:04:05"
+)
+
 func DateFormatStr(t time.Time, timeTemplate string) string {
 	//timeTemplate1 := "2006-01-02 15:04:05"
 	timeStr := t.Format(timeTemplate)
@@ -44,4 +48,21 @@ func DecimalPowerValue(str string) (decimal.Decimal, string) {
 			return v, "PiB"
 		}
 	}
+}
+
+// ListPagination 分页
+func ListPagination(count, page, pageSize int) (int, int) {
+	index := 0
+	end := pageSize
+	if page > 1 {
+		index = (page - 1) * pageSize
+	}
+	if index > count {
+		index = count - pageSize
+	}
+	end = pageSize + index
+	if end > count {
+		end = count
+	}
+	return index, end
 }

@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"encoding/json"
 	"fil-admin/common/middleware"
 	"fil-admin/common/middleware/handler"
 	"fil-admin/common/redis"
@@ -8,6 +9,7 @@ import (
 	"fmt"
 	"math"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/ceuloong/fil-admin-core/sdk/pkg/jwtauth/user"
@@ -586,11 +588,65 @@ func (e FilNodes) GetFinance(c *gin.Context) {
 	e.OK(finance, "查询成功")
 }
 
+func (e FilNodes) GetSectors(c *gin.Context) {
+	req := dto.FilNodesGetPageReq{}
+	s := service.FilNodes{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+	var object models.FilNodes
+
+	p := actions.GetPermissionFromContext(c)
+	err = s.GetByMiner(&req, p, &object)
+	if err != nil {
+		e.Error(500, err, fmt.Sprintf("获取FilNodes失败，\r\n失败信息 %s", err.Error()))
+		return
+	}
+	minerSector := handler.MinerSectors{}
+	minerSector.Miner = object.Node
+	minerSector.SectorSize = object.SectorSize
+	minerSector.SectorStatus = object.SectorStatus
+	minerSector.SectorEffective = object.SectorEffective
+
+	sectors := make([]handler.Sectors, 0)
+	sectorsStr, _ := redis.GetRedis(fmt.Sprintf("sectors_%s", object.Node))
+	json.Unmarshal([]byte(sectorsStr), &sectors)
+
+	newSectors := make([]handler.Sectors, 0)
+	for _, v := range sectors {
+		t, _ := time.Parse(utils.Layout, fmt.Sprintf("%s %s", v.Day, "23:59:59"))
+		if t.After(time.Now()) {
+			newSectors = append(newSectors, v)
+		}
+	}
+
+	count := len(newSectors)
+	index, end := utils.ListPagination(count, req.GetPageIndex(), req.GetPageSize())
+
+	for i := index; i < end; i++ {
+		v := newSectors[i]
+		v.FromTo = fmt.Sprintf("%d-%d", v.From, v.To)
+		size := strings.TrimSpace(strings.Split(minerSector.SectorSize, "GiB")[0])
+		pow := decimal.NewFromInt32(int32(v.SectorNum)).Mul(utils.DecimalValue(size))
+		powStr, unit := utils.DecimalPowerValue(pow.String())
+		v.Power = fmt.Sprintf("%s%s", powStr, unit)
+		minerSector.Sectors = append(minerSector.Sectors, v)
+	}
+
+	e.PageOK(minerSector, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")
+}
+
 /**
  * 获取矿池的报块数据
  */
 func (e FilNodes) BlockStats(c *gin.Context) {
-
 	req := dto.FilNodesGetPageReq{}
 	s := service.FilNodes{}
 	err := e.MakeContext(c).

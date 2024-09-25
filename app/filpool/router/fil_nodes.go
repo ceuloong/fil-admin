@@ -37,6 +37,6 @@ func registerFilNodesRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddl
 		r1.GET("/:id", actions.PermissionAction(), api.Get)
 		r1.GET("/finance", actions.PermissionAction(), api.GetFinance)
 		r1.GET("/blockstats", actions.PermissionAction(), api.BlockStats)
-		r1.GET("/sectors", actions.PermissionAction(), api.GetSectors)
+		r1.POST("/sectors", actions.PermissionAction(), api.GetSectors)
 	}
 }

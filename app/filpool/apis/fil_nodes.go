@@ -18,6 +18,7 @@ import (
 	"github.com/ceuloong/fil-admin-core/sdk/api"
 	_ "github.com/ceuloong/fil-admin-core/sdk/pkg/response"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 
 	"fil-admin/app/filpool/models"
 	"fil-admin/app/filpool/service"
@@ -593,7 +594,7 @@ func (e FilNodes) GetSectors(c *gin.Context) {
 	s := service.FilNodes{}
 	err := e.MakeContext(c).
 		MakeOrm().
-		Bind(&req).
+		Bind(&req, binding.JSON).
 		MakeService(&s.Service).
 		Errors
 	if err != nil {
@@ -626,18 +627,22 @@ func (e FilNodes) GetSectors(c *gin.Context) {
 			newSectors = append(newSectors, v)
 		}
 	}
+	req.PageSize = 100
 
 	count := len(newSectors)
-	index, end := utils.ListPagination(count, req.GetPageIndex(), req.GetPageSize())
-
-	for i := index; i < end; i++ {
-		v := newSectors[i]
-		v.FromTo = fmt.Sprintf("%d-%d", v.From, v.To)
-		size := strings.TrimSpace(strings.Split(minerSector.SectorSize, "GiB")[0])
-		pow := decimal.NewFromInt32(int32(v.SectorNum)).Mul(utils.DecimalValue(size))
-		powStr, unit := utils.DecimalPowerValue(pow.String())
-		v.Power = fmt.Sprintf("%s%s", powStr, unit)
-		minerSector.Sectors = append(minerSector.Sectors, v)
+	if count == 0 {
+		minerSector.Sectors = make([]handler.Sectors, 0)
+	} else {
+		index, end := utils.ListPagination(count, req.GetPageIndex(), req.GetPageSize())
+		for i := index; i < end; i++ {
+			v := newSectors[i]
+			v.FromTo = fmt.Sprintf("%d-%d", v.From, v.To)
+			size := strings.TrimSpace(strings.Split(minerSector.SectorSize, "GiB")[0])
+			pow := decimal.NewFromInt32(int32(v.SectorNum)).Mul(utils.DecimalValue(size))
+			powStr, unit := utils.DecimalPowerValue(pow.String())
+			v.Power = fmt.Sprintf("%s%s", powStr, unit)
+			minerSector.Sectors = append(minerSector.Sectors, v)
+		}
 	}
 
 	e.PageOK(minerSector, int(count), req.GetPageIndex(), req.GetPageSize(), "查询成功")

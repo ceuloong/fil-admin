@@ -18,7 +18,6 @@ import (
 	"github.com/ceuloong/fil-admin-core/sdk/api"
 	_ "github.com/ceuloong/fil-admin-core/sdk/pkg/response"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 
 	"fil-admin/app/filpool/models"
 	"fil-admin/app/filpool/service"
@@ -594,7 +593,7 @@ func (e FilNodes) GetSectors(c *gin.Context) {
 	s := service.FilNodes{}
 	err := e.MakeContext(c).
 		MakeOrm().
-		Bind(&req, binding.JSON).
+		Bind(&req).
 		MakeService(&s.Service).
 		Errors
 	if err != nil {

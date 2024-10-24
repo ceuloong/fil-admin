@@ -197,7 +197,7 @@ func (e FilPoolChart) AppGet(c *gin.Context) {
 		return
 	}
 	poolIndex := models.AppPoolIndex{
-		QualityAdjPower: poolChart.QualityAdjPower,
+		QualityAdjPower: poolChart.QualityAdjPower.RoundDown(2),
 		NodesCount:      poolChart.NodesCount,
 	}
 

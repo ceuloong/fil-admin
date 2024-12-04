@@ -77,7 +77,7 @@ func (s *NodesChart) GetSnapshotWithFilNodes(req *dto.NodeChartGetPageReq, p *ac
 	db := s.Orm.Model(&models.NodesChart{})
 
 	// Example join query
-	err := db.Select("nodes_chart.*, fil_nodes.*").
+	err := db.Select("nodes_chart.*, fil_nodes.type, fil_nodes.id, fil_nodes.node, fil_nodes.msig_node, fil_nodes.distribute_point, fil_nodes.control_balance, fil_nodes.sector_effective, fil_nodes.sector_error, fil_nodes.sector_size, fil_nodes.create_time, fil_nodes.end_time").
 		Joins("JOIN fil_nodes ON nodes_chart.node = fil_nodes.node").
 		Where("nodes_chart.last_time = ?", req.LastTime).
 		Order("fil_nodes.type, fil_nodes.id").

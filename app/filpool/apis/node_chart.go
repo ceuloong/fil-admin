@@ -108,15 +108,15 @@ func (e NodesChart) GetStats(c *gin.Context) {
 	}
 
 	p := actions.GetPermissionFromContext(c)
-	list := make([]models.NodesChart, 0)
+	list := make([]models.NodesChartWithFilNodes, 0)
 
-	err = s.GetStatsList(&req, p, &list)
+	err = s.GetSnapshotWithFilNodes(&req, p, &list)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取NodeChart统计失败，\r\n失败信息 %s", err.Error()))
 		return
 	}
 
-	stats := models.NodesChart{}
+	stats := models.NodesChartWithFilNodes{}
 
 	// Calculate totals
 	for _, node := range list {
@@ -127,8 +127,9 @@ func (e NodesChart) GetStats(c *gin.Context) {
 		stats.VestingFunds = stats.VestingFunds.Add(node.VestingFunds)
 		stats.QualityAdjPowerDelta24h = stats.QualityAdjPowerDelta24h.Add(node.QualityAdjPowerDelta24h)
 		stats.TotalRewards24h = stats.TotalRewards24h.Add(node.TotalRewards24h)
-		stats.LastMonthRewardValue = stats.LastMonthRewardValue.Add(node.RewardValue.Sub(node.LastMonthRewardValue))
-		stats.LastSendAmount = stats.LastSendAmount.Add(node.SendAmount.Sub(node.LastSendAmount))
+		monthRewardValue := node.RewardValue.Sub(node.LastMonthRewardValue)
+		stats.LastMonthRewardValue = stats.LastMonthRewardValue.Add(monthRewardValue)
+		stats.RealRewardValueMonth = stats.RealRewardValueMonth.Add(monthRewardValue.Mul(node.DistributePoint)).Round(4)
 	}
 
 	e.OK(stats, "统计查询成功")

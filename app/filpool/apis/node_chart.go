@@ -3,9 +3,11 @@ package apis
 import (
 	"encoding/base64"
 	"fil-admin/common/middleware/handler"
+	"fil-admin/utils"
 	"fmt"
 	"path/filepath"
 	"reflect"
+	"strconv"
 	"time"
 
 	"github.com/ceuloong/fil-admin-core/sdk/api"
@@ -392,15 +394,15 @@ func (e NodesChart) ResetList(list []models.NodesChartWithFilNodes) []models.Nod
 	for _, node := range list {
 		node.QualityAdjPowerDelta24h = node.QualityAdjPower.Sub(node.LastQualityAdjPower)
 		node.QualityAdjPowerDeltaMonth = node.QualityAdjPower.Sub(node.LastMonthQualityAdjPower)
-		node.SectorPledgeBalanceDeltaMonth = node.SectorPledgeBalance.Sub(node.LastMonthSectorPledgeBalance)
+		node.SectorPledgeBalanceDeltaMonth = node.LastMonthSectorPledgeBalance.Sub(node.SectorPledgeBalance)
 		node.LastWeightedBlocks = node.WeightedBlocks - node.LastWeightedBlocks
 		node.LastRewardValue = node.RewardValue.Sub(node.LastRewardValue)
 		node.LastMonthWeightedBlocks = node.WeightedBlocks - node.LastMonthWeightedBlocks
 		node.LastMonthRewardValue = node.RewardValue.Sub(node.LastMonthRewardValue)
-		node.RealWeightedBlocks24h = decimal.NewFromInt(int64(node.WeightedBlocks - node.LastWeightedBlocks)).Mul(node.DistributePoint).Round(1)
-		node.RealRewardValue24h = node.RewardValue.Sub(node.LastRewardValue).Mul(node.DistributePoint).Round(4)
-		node.RealWeightedBlocksMonth = decimal.NewFromInt(int64(node.WeightedBlocks - node.LastMonthWeightedBlocks)).Mul(node.DistributePoint).Round(1)
-		node.RealRewardValueMonth = node.RewardValue.Sub(node.LastMonthRewardValue).Mul(node.DistributePoint).Round(4)
+		node.RealWeightedBlocks24h = utils.DecimalValue(strconv.Itoa(node.LastWeightedBlocks)).Mul(node.DistributePoint).Round(1)
+		node.RealRewardValue24h = node.LastRewardValue.Mul(node.DistributePoint).Round(4)
+		node.RealWeightedBlocksMonth = utils.DecimalValue(strconv.Itoa(node.LastMonthWeightedBlocks)).Mul(node.DistributePoint).Round(1)
+		node.RealRewardValueMonth = node.LastMonthRewardValue.Mul(node.DistributePoint).Round(4)
 		node.LastMonthReceiveAmount = node.ReceiveAmount.Sub(node.LastMonthReceiveAmount)
 		node.LastMonthBurnAmount = node.BurnAmount.Sub(node.LastMonthBurnAmount)
 		node.LastMonthSendAmount = node.SendAmount.Sub(node.LastMonthSendAmount)

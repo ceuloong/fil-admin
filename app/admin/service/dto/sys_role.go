@@ -33,6 +33,12 @@ func (m *SysRoleGetPageReq) GetNeedSearch() interface{} {
 	return *m
 }
 
+type SysRoleGetAllResp struct {
+	RoleId   int    `json:"id"`
+	RoleName string `json:"label"`
+	Status   string `json:"status"`
+}
+
 type SysRoleInsertReq struct {
 	RoleId    int              `uri:"id" comment:"角色编码"`        // 角色编码
 	RoleName  string           `form:"roleName" comment:"角色名称"` // 角色名称

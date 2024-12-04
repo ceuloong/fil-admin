@@ -11,6 +11,20 @@ const (
 	Layout = "2006-01-02 15:04:05"
 )
 
+// GetFirstDayOfMonth 获取当月第一天，如果当前是1号0点则返回上月第一天
+func GetFirstDayOfMonth(now time.Time) time.Time {
+	// 判断是否为当月1号0点
+	isFirstDayMidnight := now.Day() == 1 && now.Hour() == 0 && now.Minute() == 0 && now.Second() == 0
+
+	if isFirstDayMidnight {
+		// 如果是1号0点，返回上月第一天
+		return time.Date(now.Year(), now.Month()-1, 1, 0, 0, 0, 0, now.Location())
+	}
+
+	// 否则返回当月第一天
+	return time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, now.Location())
+}
+
 func DateFormatStr(t time.Time, timeTemplate string) string {
 	//timeTemplate1 := "2006-01-02 15:04:05"
 	timeStr := t.Format(timeTemplate)

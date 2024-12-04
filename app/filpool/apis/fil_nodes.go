@@ -53,7 +53,7 @@ func (e FilNodes) GetPage(c *gin.Context) {
 		return
 	}
 
-	p := actions.GetPermissionFromContext(c)
+	//p := actions.GetPermissionFromContext(c)
 	list := make([]models.FilNodes, 0)
 	var count int64
 
@@ -63,7 +63,7 @@ func (e FilNodes) GetPage(c *gin.Context) {
 			req.DeptId = fmt.Sprintf("/%d/", deptId)
 		}
 	}
-	err = s.GetPage(&req, p, &list, &count)
+	err = s.GetPage(&req, &list, &count)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取FilNodes失败，\r\n失败信息 %s", err.Error()))
 		return
@@ -130,7 +130,7 @@ func (e FilNodes) ChartList(c *gin.Context) {
 		return
 	}
 
-	p := actions.GetPermissionFromContext(c)
+	//p := actions.GetPermissionFromContext(c)
 	list := make([]models.FilNodes, 0)
 	var count int64
 
@@ -140,7 +140,7 @@ func (e FilNodes) ChartList(c *gin.Context) {
 			req.DeptId = fmt.Sprintf("/%d/", deptId)
 		}
 	}
-	err = s.GetPage(&req, p, &list, &count)
+	err = s.GetPage(&req, &list, &count)
 	if err != nil {
 		e.Error(500, err, fmt.Sprintf("获取FilNodes失败，\r\n失败信息 %s", err.Error()))
 		return

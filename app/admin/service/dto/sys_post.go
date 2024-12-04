@@ -22,6 +22,12 @@ func (m *SysPostPageReq) GetNeedSearch() interface{} {
 	return *m
 }
 
+type SysPostGetAllResp struct {
+	PostId   int    `json:"id"`
+	PostName string `json:"label"`
+	Status   int    `json:"status"`
+}
+
 // SysPostInsertReq 增使用的结构体
 type SysPostInsertReq struct {
 	PostId   int    `uri:"id"  comment:"id"`

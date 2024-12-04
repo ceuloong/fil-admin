@@ -46,6 +46,46 @@ func (e *NodesChart) GetPage(c *dto.NodeChartGetPageReq, p *actions.DataPermissi
 	return nil
 }
 
+// GetPage 获取NodeChart列表
+func (e *NodesChart) GetStatsList(c *dto.NodeChartGetPageReq, p *actions.DataPermission, list *[]models.NodesChart) error {
+	var err error
+	var data models.NodesChart
+
+	lastTime := c.LastTime
+	c.LastTime = ""
+
+	tx := e.Orm.Model(&data)
+
+	tx.Scopes(
+		cDto.MakeCondition(c.GetNeedSearch()),
+		actions.Permission(data.TableName(), p),
+	)
+	if lastTime != "" {
+		tx.Where("TO_DAYS(last_time)=TO_DAYS(?) AND HOUR(last_time)=HOUR(?)", lastTime, lastTime)
+	}
+	tx.Order("id desc").
+		Find(list).Limit(-1).Offset(-1)
+	err = tx.Error
+	if err != nil {
+		e.Log.Errorf("NodeChartService GetPage error:%s \r\n", err)
+		return err
+	}
+	return nil
+}
+
+func (s *NodesChart) GetSnapshotWithFilNodes(req *dto.NodeChartGetPageReq, p *actions.DataPermission, list *[]models.NodesChartWithFilNodes) error {
+	db := s.Orm.Model(&models.NodesChart{})
+
+	// Example join query
+	err := db.Select("nodes_chart.*, fil_nodes.*").
+		Joins("JOIN fil_nodes ON nodes_chart.node = fil_nodes.node").
+		Where("nodes_chart.last_time = ?", req.LastTime).
+		Order("fil_nodes.type, fil_nodes.id").
+		Find(list).Error
+
+	return err
+}
+
 // GetList 获取FilNodes对象
 func (e *NodesChart) GetList(d *dto.NodeChartGetReq, p *actions.DataPermission, list *[]models.NodesChart) error {
 	var data models.NodesChart

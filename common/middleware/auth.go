@@ -13,7 +13,8 @@ import (
 func AuthInit() (*jwt.GinJWTMiddleware, error) {
 	timeout := time.Hour
 	if config.ApplicationConfig.Mode == "dev" {
-		timeout = time.Duration(876010) * time.Hour
+		//timeout = time.Duration(876010) * time.Hour
+		timeout = time.Duration(config.JwtConfig.Timeout) * time.Second
 	} else {
 		if config.JwtConfig.Timeout != 0 {
 			timeout = time.Duration(config.JwtConfig.Timeout) * time.Second

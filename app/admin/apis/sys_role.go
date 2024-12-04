@@ -283,3 +283,39 @@ func (e SysRole) Update2DataScope(c *gin.Context) {
 	}
 	e.OK(nil, "操作成功")
 }
+
+// GetRoleOptions 获取角色选择框列表
+// @Summary 获取角色选择框列表
+func (e SysRole) GetRoleOptions(c *gin.Context) {
+	s := service.SysRole{}
+	req := dto.SysRoleGetPageReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req, binding.Form).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	list := make([]models.SysRole, 0)
+	var count int64
+
+	err = s.GetAll(&req, &list, &count)
+	if err != nil {
+		e.Error(500, err, "查询失败")
+		return
+	}
+	l := make([]dto.SysRoleGetAllResp, 0)
+	for _, v := range list {
+		l = append(l, dto.SysRoleGetAllResp{
+			RoleId:   v.RoleId,
+			RoleName: v.RoleName,
+			Status:   v.Status,
+		})
+	}
+
+	e.OK(l, "查询成功")
+}

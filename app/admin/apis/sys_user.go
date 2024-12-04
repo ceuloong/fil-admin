@@ -195,6 +195,7 @@ func (e SysUser) Delete(c *gin.Context) {
 	err = s.Remove(&req, p)
 	if err != nil {
 		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
 		return
 	}
 	e.OK(req.GetId(), "删除成功")
@@ -245,7 +246,11 @@ func (e SysUser) InsetAvatar(c *gin.Context) {
 		e.Logger.Error(err)
 		return
 	}
-	e.OK(filPath, "修改成功")
+	// var mapRes = make(map[string]string)
+	// mapRes["url"] = req.Avatar
+	// mapRes["name"] = guid + ".jpg"
+	// mapRes["msg"] = "修改成功"
+	e.OK(req.Avatar, "修改成功")
 }
 
 // UpdateStatus 修改用户状态

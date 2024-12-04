@@ -22,6 +22,8 @@ func registerNodeChartRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMidd
 		r.GET("/ran-list", actions.PermissionAction(), api.RanList)
 		r.GET("/get", actions.PermissionAction(), api.Get)
 		r.GET("", actions.PermissionAction(), api.GetPage)
+		r.GET("/stats", actions.PermissionAction(), api.GetStats)
+		r.GET("/export", actions.PermissionAction(), api.ExportSnapshotWithFilNodes)
 		//r.POST("/export", api.ExportXlsx)
 	}
 }

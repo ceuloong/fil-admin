@@ -182,3 +182,40 @@ func (e SysPost) Delete(c *gin.Context) {
 	}
 	e.OK(req.GetId(), "删除成功")
 }
+
+// GetPostOption
+// @Summary 岗位列表数据
+func (e SysPost) GetPostOptions(c *gin.Context) {
+	s := service.SysPost{}
+	req := dto.SysPostPageReq{}
+	err := e.MakeContext(c).
+		MakeOrm().
+		Bind(&req, binding.Form).
+		MakeService(&s.Service).
+		Errors
+	if err != nil {
+		e.Logger.Error(err)
+		e.Error(500, err, err.Error())
+		return
+	}
+
+	list := make([]models.SysPost, 0)
+	var count int64
+
+	err = s.GetPage(&req, &list, &count)
+	if err != nil {
+		e.Error(500, err, "查询失败")
+		return
+	}
+
+	l := make([]dto.SysPostGetAllResp, 0)
+	for _, v := range list {
+		l = append(l, dto.SysPostGetAllResp{
+			PostId:   v.PostId,
+			PostName: v.PostName,
+			Status:   v.Status,
+		})
+	}
+
+	e.OK(l, "查询成功")
+}

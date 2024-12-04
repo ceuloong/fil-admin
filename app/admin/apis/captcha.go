@@ -30,6 +30,7 @@ func (e System) GenerateCaptchaHandler(c *gin.Context) {
 	}
 	e.Custom(gin.H{
 		"code": 200,
+		//"anwser": anwser,
 		"data": b64s,
 		"id":   id,
 		"msg":  "success",

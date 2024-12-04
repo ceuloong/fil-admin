@@ -183,8 +183,9 @@ func (e *ChartsExec) GetNodesChart(nodes models.FilNodes) (models.NodesChart, Up
 	lastOne := e.GetLastOneByTime(nodes, lastDay)
 
 	//lastMonthLastDay := currentTime.AddDate(0, 0, -currentTime.Day()).Truncate(time.Hour)
-	lastMonthLastDay := utils.SetTime(currentTime.AddDate(0, 0, -currentTime.Day()+1), 0)
-	lastMonthLastOne := e.GetLastOneByTime(nodes, lastMonthLastDay)
+	firstDayOfMonth := utils.GetFirstDayOfMonth(currentTime)
+	//lastMonthLastDay := utils.SetTime(currentTime.AddDate(0, 0, -currentTime.Day()+1), 0)
+	lastMonthLastOne := e.GetLastOneByTime(nodes, firstDayOfMonth)
 
 	updateNodes := UpdateNodesDelta{}
 	// 24小时内算力增量 保存的是单位为GiB的算力

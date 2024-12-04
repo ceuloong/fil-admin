@@ -117,3 +117,53 @@ func (e *NodesTotal) SetScale(total NodesTotal) NodesTotal {
 
 	return total
 }
+
+type NodesChartWithFilNodes struct {
+	Node                          string          `gorm:"type:varchar(255)" json:"node,omitempty"`
+	MsigNode                      string          `json:"msigNode" gorm:"type:varchar(255);comment:所属地址"`
+	Type                          int             `json:"type" gorm:"type:int;comment:节点类型 联合类型"`
+	DistributePoint               decimal.Decimal `json:"distributePoint" gorm:"type:decimal(10,3);comment:联合挖矿分配比例"`
+	QualityAdjPower               decimal.Decimal `gorm:"type:decimal(20, 4);有效算力" json:"qualityAdjPower"`
+	LastQualityAdjPower           decimal.Decimal `gorm:"type:decimal(20, 4);昨日有效算力" json:"lastQualityAdjPower"`
+	LastMonthQualityAdjPower      decimal.Decimal `gorm:"type:decimal(20, 4);月初算力" json:"lastMonthQualityAdjPower"`
+	QualityAdjPowerDelta24h       decimal.Decimal `gorm:"type:decimal(20, 4);24h算力增量" json:"qualityAdjPowerDelta24H"`
+	QualityAdjPowerDeltaMonth     decimal.Decimal `gorm:"type:decimal(20, 4);月算力增量" json:"qualityAdjPowerDeltaMonth"`
+	AvailableBalance              decimal.Decimal `gorm:"type:decimal(20, 8)" json:"availableBalance"`
+	LastAvailableBalance          decimal.Decimal `gorm:"type:decimal(20, 8)" json:"lastAvailableBalance"`
+	Balance                       decimal.Decimal `gorm:"type:decimal(20, 8)" json:"balance"`
+	LastBalance                   decimal.Decimal `gorm:"type:decimal(20, 8)" json:"lastBalance"`
+	SectorPledgeBalance           decimal.Decimal `gorm:"type:decimal(20, 8)" json:"sectorPledgeBalance"`
+	LastSectorPledgeBalance       decimal.Decimal `gorm:"type:decimal(20, 8)" json:"lastSectorPledgeBalance"`
+	LastMonthSectorPledgeBalance  decimal.Decimal `gorm:"type:decimal(20, 8)" json:"lastMonthSectorPledgeBalance"`
+	SectorPledgeBalanceDeltaMonth decimal.Decimal `gorm:"type:decimal(20, 8);月质押量增量" json:"sectorPledgeBalanceDeltaMonth"`
+	VestingFunds                  decimal.Decimal `gorm:"type:decimal(20, 8)" json:"vestingFunds"`
+	LastVestingFunds              decimal.Decimal `gorm:"type:decimal(20, 8)" json:"lastVestingFunds"`
+	BlocksMined24h                int             `gorm:"type:int;24h报块数量" json:"blocksMined24H,omitempty"`
+	TotalRewards24h               decimal.Decimal `gorm:"type:decimal(20, 8);24h出块奖励金额" json:"totalRewards24H"`
+	LuckyValue24h                 decimal.Decimal `gorm:"type:decimal(20, 8);24hLucky值" json:"luckyValue24H"`
+	WeightedBlocks                int             `gorm:"type:int" json:"weightedBlocks,omitempty"`
+	RewardValue                   decimal.Decimal `gorm:"type:decimal(20, 8)" json:"rewardValue"`
+	LastWeightedBlocks            int             `gorm:"type:int" json:"lastWeightedBlocks,omitempty"`
+	LastRewardValue               decimal.Decimal `gorm:"type:decimal(20, 8)" json:"lastRewardValue"`
+	LastMonthWeightedBlocks       int             `gorm:"type:int" json:"lastMonthWeightedBlocks,omitempty"`
+	LastMonthRewardValue          decimal.Decimal `gorm:"type:decimal(20, 8)" json:"lastMonthRewardValue"`
+	RealWeightedBlocks24h         decimal.Decimal `gorm:"type:decimal(20, 8)" json:"realWeightedBlocks24h,omitempty"` //算上比例的实际24h报块数量
+	RealRewardValue24h            decimal.Decimal `gorm:"type:decimal(20, 8);24h出块奖励金额" json:"realRewardValue24h"`    //算上比例的实际24h出块奖励金额
+	RealWeightedBlocksMonth       decimal.Decimal `gorm:"type:decimal(20, 8);" json:"realWeightedBlocksMonth"`        //算上比例的实际月报块数量
+	RealRewardValueMonth          decimal.Decimal `gorm:"type:decimal(20, 8);" json:"realRewardValueMonth"`           //算上比例的实际月出块奖励金额
+	ReceiveAmount                 decimal.Decimal `gorm:"type:decimal(20, 8);节点接收数量" json:"receiveAmount"`
+	BurnAmount                    decimal.Decimal `gorm:"type:decimal(20, 8);节点销毁数量" json:"burnAmount"`
+	SendAmount                    decimal.Decimal `gorm:"type:decimal(20, 8);节点发送数量" json:"sendAmount"`
+	LastReceiveAmount             decimal.Decimal `gorm:"type:decimal(20, 8);前一天接收数量" json:"lastReceiveAmount"`
+	LastBurnAmount                decimal.Decimal `gorm:"type:decimal(20, 4);前一天销毁数量" json:"lastBurnAmount"`
+	LastSendAmount                decimal.Decimal `gorm:"type:decimal(20, 4);前一天提现数量" json:"lastSendAmount"`
+	LastMonthReceiveAmount        decimal.Decimal `gorm:"type:decimal(20, 8);上月末节点接收数量" json:"lastMonthReceiveAmount"`
+	LastMonthBurnAmount           decimal.Decimal `gorm:"type:decimal(20, 4);上月末销毁数量" json:"lastMonthBurnAmount"`
+	LastMonthSendAmount           decimal.Decimal `gorm:"type:decimal(20, 4);上月末提现数量" json:"lastMonthSendAmount"`
+	ControlBalance                decimal.Decimal `gorm:"type:decimal(20,8)" json:"controlBalance"`
+	SectorEffective               int             `gorm:"type:int" json:"sectorEffective"`
+	SectorError                   int             `gorm:"type:int" json:"sectorError"`
+	SectorSize                    string          `json:"sectorSize" gorm:"type:varchar(50);comment:扇区大小"`
+	CreateTime                    time.Time       `json:"createTime" gorm:"type:datetime;comment:账户创建时间"`
+	EndTime                       time.Time       `json:"endTime" gorm:"type:datetime;comment:节点结束时间"`
+}

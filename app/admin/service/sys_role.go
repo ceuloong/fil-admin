@@ -350,3 +350,21 @@ func (e *SysRole) GetById(roleId int) ([]string, error) {
 	}
 	return permissions, nil
 }
+
+// GetPage 获取SysRole列表
+func (e *SysRole) GetAll(c *dto.SysRoleGetPageReq, list *[]models.SysRole, count *int64) error {
+	var err error
+	var data models.SysRole
+
+	err = e.Orm.Model(&data).Preload("SysMenu").
+		Scopes(
+			cDto.MakeCondition(c.GetNeedSearch()),
+		).
+		Find(list).Limit(-1).Offset(-1).
+		Count(count).Error
+	if err != nil {
+		e.Log.Errorf("db error:%s", err)
+		return err
+	}
+	return nil
+}

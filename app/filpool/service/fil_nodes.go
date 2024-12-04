@@ -26,7 +26,7 @@ type FilNodes struct {
 }
 
 // GetPage 获取FilNodes列表
-func (e *FilNodes) GetPage(c *dto.FilNodesGetPageReq, p *actions.DataPermission, list *[]models.FilNodes, count *int64) error {
+func (e *FilNodes) GetPage(c *dto.FilNodesGetPageReq, list *[]models.FilNodes, count *int64) error {
 	var err error
 	var data models.FilNodes
 
@@ -34,7 +34,7 @@ func (e *FilNodes) GetPage(c *dto.FilNodesGetPageReq, p *actions.DataPermission,
 		Scopes(
 			cDto.MakeCondition(c.GetNeedSearch()),
 			cDto.Paginate(c.GetPageSize(), c.GetPageIndex()),
-			actions.Permission(data.TableName(), p),
+			//actions.Permission(data.TableName(), p),
 		).
 		Find(list).Limit(-1).Offset(-1).
 		Count(count).Error

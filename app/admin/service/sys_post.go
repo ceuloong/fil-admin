@@ -103,3 +103,21 @@ func (e *SysPost) Remove(d *dto.SysPostDeleteReq) error {
 	}
 	return nil
 }
+
+// GetAll 获取SysPost列表
+func (e *SysPost) GetAll(c *dto.SysPostPageReq, list *[]models.SysPost, count *int64) error {
+	var err error
+	var data models.SysPost
+
+	err = e.Orm.Model(&data).
+		Scopes(
+			cDto.MakeCondition(c.GetNeedSearch()),
+		).
+		Find(list).Limit(-1).Offset(-1).
+		Count(count).Error
+	if err != nil {
+		e.Log.Errorf("db error:%s \r", err)
+		return err
+	}
+	return nil
+}

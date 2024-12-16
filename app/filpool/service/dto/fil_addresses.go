@@ -2,8 +2,9 @@ package dto
 
 import (
 	"fil-admin/app/filpool/models"
-	"github.com/shopspring/decimal"
 	"time"
+
+	"github.com/shopspring/decimal"
 
 	"fil-admin/common/dto"
 	common "fil-admin/common/models"
@@ -102,7 +103,6 @@ type FilAddressesUpdateReq struct {
 	Message          string          `json:"message" comment:""`
 	Type             string          `json:"type" comment:"controller, worker, other"`
 	CreateTime       time.Time       `json:"createTime" comment:"地址创建时间"`
-	CreatedTime      time.Time       `json:"createdTime" comment:"记录添加时间"`
 	AccountType      string          `json:"accountType" comment:""`
 	LastTransferTime time.Time       `json:"lastTransferTime" comment:"最后交易时间"`
 	Nonce            int64           `json:"nonce" comment:""`
@@ -113,6 +113,7 @@ type FilAddressesUpdateReq struct {
 	TimeTag          int64           `json:"timeTag" comment:"时间标签"`
 	Status           int             `json:"status" comment:"状态"`
 	common.ControlBy
+	common.ModelTime
 }
 
 func (s *FilAddressesUpdateReq) Generate(model *models.FilAddresses) {
@@ -126,7 +127,6 @@ func (s *FilAddressesUpdateReq) Generate(model *models.FilAddresses) {
 	model.Message = s.Message
 	model.Type = s.Type
 	model.CreateTime = s.CreateTime
-	model.CreatedTime = s.CreatedTime
 	model.AccountType = s.AccountType
 	model.LastTransferTime = s.LastTransferTime
 	model.Nonce = s.Nonce
@@ -136,6 +136,12 @@ func (s *FilAddressesUpdateReq) Generate(model *models.FilAddresses) {
 	model.TransferCount = s.TransferCount
 	model.TimeTag = s.TimeTag
 	model.Status = s.Status
+	if s.UpdateBy != 0 {
+		model.UpdateBy = s.UpdateBy
+	}
+	if model.CreatedAt.IsZero() {
+		model.CreatedAt = s.CreateTime
+	}
 }
 
 func (s *FilAddressesUpdateReq) GetId() interface{} {

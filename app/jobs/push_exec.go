@@ -126,6 +126,7 @@ type Aps struct {
 
 type Alert struct {
 	Alert string `json:"alert"`
+	Sound string `json:"sound"`
 }
 
 // Apns2Push 推送消息
@@ -190,6 +191,7 @@ func Apns2Pushs(users []sysModels.SysUser, title string, content string) {
 	}
 	a := Alert{
 		Alert: content,
+		Sound: "default",
 	}
 	aps := Aps{
 		Aps: a,

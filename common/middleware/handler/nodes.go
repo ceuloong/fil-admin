@@ -3,6 +3,7 @@ package handler
 import (
 	models2 "fil-admin/app/filpool/models"
 	"fil-admin/utils"
+	"fmt"
 	"math"
 	"time"
 
@@ -45,6 +46,7 @@ type FilNodes struct {
 	SyncStatus              bool            `json:"syncStatus" gorm:"type:int;comment:同步状态"`
 	PowerDeltaShow          string          `json:"powerDeltaShow" gorm:"-"`
 	PowerDeltaUnit          string          `json:"powerDeltaUnit" gorm:"-"`
+	Url                     string          `json:"url" gorm:"-"`
 }
 
 func (FilNodes) TableName() string {
@@ -86,6 +88,7 @@ func (s *FilNodes) Generate(node models2.FilNodes) FilNodes {
 		MiningEfficiency:        node.MiningEfficiency.Mul(decimal.NewFromInt(1000)).RoundDown(1),
 		Height:                  node.Height,
 		SyncStatus:              node.OnLine,
+		Url:                     fmt.Sprintf("https://www.filutils.com/zh/miner/%s", node.Node),
 	}
 }
 

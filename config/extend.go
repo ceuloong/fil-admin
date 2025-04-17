@@ -14,11 +14,13 @@ type Extend struct {
 }
 
 type Apns2 struct {
-	Teamid   string `mapstructure:"teamid" yaml:"teamid"`
-	Bundleid string `mapstructure:"bundleid" yaml:"bundleid"`
-	CertPath string `mapstructure:"certPath" yaml:"certPath"`
-	Password string `mapstructure:"password" yaml:"password"`
-	Topic    string `mapstructure:"topic" yaml:"topic"`
-	Prod     bool   `mapstructure:"prod" yaml:"prod"`
-	Push     bool   `mapstructure:"push" yaml:"push"`
+	Teamid    string `mapstructure:"teamid" yaml:"teamid"`
+	Keyid     string `mapstructure:"keyid" yaml:"keyid"`
+	Bundleid  string `mapstructure:"bundleid" yaml:"bundleid"`
+	CertPath  string `mapstructure:"certPath" yaml:"certPath"`
+	Password  string `mapstructure:"password" yaml:"password"`
+	Topic     string `mapstructure:"topic" yaml:"topic"`
+	Prod      bool   `mapstructure:"prod" yaml:"prod"`
+	Push      bool   `mapstructure:"push" yaml:"push"`
+	P8keyPath string `mapstructure:"p8keyPath" yaml:"p8keyPath"`
 }

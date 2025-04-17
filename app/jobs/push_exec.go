@@ -14,6 +14,7 @@ import (
 	"github.com/ceuloong/fil-admin-core/sdk/pkg"
 	"github.com/sideshow/apns2"
 	"github.com/sideshow/apns2/certificate"
+	"github.com/sideshow/apns2/token"
 )
 
 // PushExec struct
@@ -36,12 +37,42 @@ func InitPushClient() {
 		log.Info("Cert Error:", err)
 		return
 	}
+
 	// Use Production() for apps published to the app store or installed as an ad-hoc distribution
 	client = apns2.NewClient(cert)
 	if config.ExtConfig.Apns2.Prod {
 		client = client.Production()
 	}
 	log.Info(pkg.Green("Apns2 Push Client Init Success"))
+}
+
+func InitP8PushClient2() {
+	teamId := config.ExtConfig.Apns2.Teamid
+	keyId := config.ExtConfig.Apns2.Keyid
+	p8KeyPath := config.ExtConfig.Apns2.P8keyPath
+
+	if p8KeyPath == "" {
+		log.Info("P8KeyPath is required")
+		return
+	}
+
+	authKey, err := token.AuthKeyFromFile(p8KeyPath)
+	if err != nil {
+		log.Info(fmt.Sprintf("生成 JWT 失败: %v", err))
+		return
+	}
+
+	token := &token.Token{
+		KeyID:   keyId,
+		TeamID:  teamId,
+		AuthKey: authKey,
+	}
+
+	// 选择环境（开发或生产）
+	client = apns2.NewTokenClient(token) // 开发环境
+	if config.ExtConfig.Apns2.Prod {
+		client = client.Production()
+	}
 }
 
 func (e Apns2PushExec) Exec(arg interface{}) error {
@@ -207,6 +238,7 @@ func Apns2Pushs(users []sysModels.SysUser, title string, content string) {
 		res, err := client.Push(notification)
 		if err != nil {
 			log.Info("Error:", err)
+			continue
 		}
 
 		fmt.Printf("%v %v %v\n", res.StatusCode, res.ApnsID, res.Reason)

@@ -65,7 +65,7 @@ func setup() {
 		file.NewSource(file.WithPath(configYml)),
 		database.Setup,
 		storage.Setup,
-		jobs.InitPushClient,
+		jobs.InitP8PushClient2,
 	)
 	//注册监听函数
 	queue := sdk.Runtime.GetMemoryQueue("")
